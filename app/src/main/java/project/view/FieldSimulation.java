@@ -5,6 +5,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
@@ -14,12 +15,12 @@ import project.logic.Particle;
 import project.logic.Vector2D;
 import project.utils.ResizableCanvas;
 
-public class FieldAnimation {
+public class FieldSimulation {
     private Field2D field;
     private ResizableCanvas canvas;
     private GraphicsContext ctx;
     double k;
-    public FieldAnimation(Field2D f, ResizableCanvas c){
+    public FieldSimulation(Field2D f, ResizableCanvas c){
         field = f;
         canvas = c;
         ctx = c.getGraphicsContext2D();
@@ -27,10 +28,17 @@ public class FieldAnimation {
     }
 
 
-    Vector2D convertFieldCoordsToScreen(Vector2D mapCoords){
+    public Vector2D convertFieldCoordsToScreen(Vector2D mapCoords){
         return Vector2D.fromCoords(
             (mapCoords.getX()+field.getWidth()/2)/field.getWidth()*canvas.getWidth(), 
             (mapCoords.getY()+field.getHeight()/2)/field.getHeight()*canvas.getHeight());
+    }
+
+    public Vector2D convertScreenCoordsToField(Vector2D screenCoords){
+        return Vector2D.fromCoords(
+            screenCoords.getX()/canvas.getWidth()*field.getWidth()-field.getWidth()/2, 
+            screenCoords.getY()/canvas.getHeight()*field.getHeight()-field.getHeight()/2
+        );
     }
 
     Vector2D convertGridCoordsToField(int x, int y){
@@ -40,6 +48,7 @@ public class FieldAnimation {
         );
         
     }
+
     public void drawArrow(Vector2D coords, double length, double angle){
         
         // Draw a Text
@@ -141,6 +150,8 @@ public class FieldAnimation {
     public void render(){
         k = canvas.getResizeK();
         Platform.runLater(()->{
+            ctx.setFill(Color.WHITE);
+            ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
             ctx.setStroke(Color.BLACK);
             ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
             ctx.strokeLine(0, canvas.getHeight()/2, canvas.getWidth(), canvas.getHeight()/2);
@@ -161,7 +172,7 @@ public class FieldAnimation {
                 else ctx.setFill(Color.BLUE);
 
                 Vector2D renderCoords = convertFieldCoordsToScreen(p.getPos());
-                ctx.fillOval((renderCoords.getX()-r), (renderCoords.getY()-r), 2*r*k, 2*r*k);
+                ctx.fillOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
             }
 
             

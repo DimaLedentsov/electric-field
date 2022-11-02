@@ -26,12 +26,7 @@ public class Field2D {
         grid = new Vector2D[h][w];
         Random rand = new Random();
         particles = new LinkedList<>();
-        
-        particles.add(new Particle(Vector2D.fromCoords(50, 0), 5));
-        particles.add(new Particle(Vector2D.fromCoords(0, 0), -5));
-
-
-        
+                
     }
     public Vector2D get(int x, int y){
         return grid[y][x];
