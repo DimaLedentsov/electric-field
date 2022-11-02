@@ -26,6 +26,20 @@ public class FieldAnimation {
         
     }
 
+
+    Vector2D convertFieldCoordsToScreen(Vector2D mapCoords){
+        return Vector2D.fromCoords(
+            (mapCoords.getX()+field.getWidth()/2)/field.getWidth()*canvas.getWidth(), 
+            (mapCoords.getY()+field.getHeight()/2)/field.getHeight()*canvas.getHeight());
+    }
+
+    Vector2D convertGridCoordsToField(int x, int y){
+        return Vector2D.fromCoords(
+            (x-Math.round(field.getGridWidth()/2))*field.getWidth()/field.getGridWidth(),
+            (y-Math.round(field.getGridHeight()/2))*field.getHeight()/field.getGridHeight()
+        );
+        
+    }
     public void drawArrow(Vector2D coords, double length, double angle){
         
         // Draw a Text
@@ -45,7 +59,7 @@ public class FieldAnimation {
       3);
 
         ctx.restore();*/
-        length*=k;
+        //length*=k;
         /*ctx.setLineDashes(0);
         ctx.setLineWidth(1);
         Transform transform = Transform.translate(x, y);
@@ -102,7 +116,6 @@ public class FieldAnimation {
     final double e0 = 8.854187e-12;
     public Vector2D E(Vector2D pos){
         Vector2D res = Vector2D.nullVector();
-        pos = pos.mul(k);
         for (Particle p: field.getParticles()){
             
             Vector2D r = pos.sub(p.getPos());
@@ -114,13 +127,12 @@ public class FieldAnimation {
         return res.div(4*Math.PI*e0);
     }
     public void update(){
-        double CELL_WIDTH = canvas.getWidth()/field.getWidth();
-        double CELL_HEIGHT = canvas.getHeight()/field.getHeight();
-        for(int y=0; y<field.getHeight(); y++){
-            for(int x=0; x<field.getWidth(); x++){
-                double x_ = x*CELL_WIDTH-Math.round(field.getWidth()/2);
-                double y_ = y*CELL_HEIGHT-Math.round(field.getHeight()/2);
-                Vector2D vec = E(Vector2D.fromCoords(x_, y_));//Vector2D.fromAngle(Math.toRadians(Math.random() * 360), 0.1);
+
+        for(int y=0; y<field.getGridHeight(); y++){
+            for(int x=0; x<field.getGridWidth(); x++){
+                Vector2D pos = convertGridCoordsToField(x, y);
+    
+                Vector2D vec = E(pos);//Vector2D.fromAngle(Math.toRadians(Math.random() * 360), 0.1);
                 field.set(x, y, vec);
                 //System.out.println(vec.toString());
             }
@@ -129,16 +141,17 @@ public class FieldAnimation {
     public void render(){
         k = canvas.getResizeK();
         Platform.runLater(()->{
-            double CELL_WIDTH = canvas.getWidth()/field.getWidth();
-            double CELL_HEIGHT = canvas.getHeight()/field.getHeight();
-            for(int y=0; y<field.getHeight(); y++){
-                for(int x=0; x<field.getWidth(); x++){
+            ctx.setStroke(Color.BLACK);
+            ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
+            ctx.strokeLine(0, canvas.getHeight()/2, canvas.getWidth(), canvas.getHeight()/2);
+
+            for(int y=0; y<field.getGridHeight(); y++){
+                for(int x=0; x<field.getGridWidth(); x++){
                     Vector2D vec = field.get(x, y);
-                    double canvasX = x*CELL_WIDTH;
-                    double canvasY = y*CELL_HEIGHT;
-                    drawArrow(Vector2D.fromCoords(canvasX, canvasY), 10, vec.getAngle());
-                    ctx.setFill(Color.RED);
-                    ctx.fillOval(canvasX-1.5, canvasY-1.5, 3, 3);
+                    Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
+                    drawArrow(renderCoords, 10, vec.getAngle());
+                    //ctx.setFill(Color.RED);
+                    //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
                 }
             }
 
@@ -146,8 +159,12 @@ public class FieldAnimation {
                 double r=20;
                 if(p.getQ()>0) ctx.setFill(Color.RED);
                 else ctx.setFill(Color.BLUE);
-                ctx.fillOval((p.getPos().getX()-r)*k, (p.getPos().getY()-r)*k, 2*r*k, 2*r*k);
+
+                Vector2D renderCoords = convertFieldCoordsToScreen(p.getPos());
+                ctx.fillOval((renderCoords.getX()-r), (renderCoords.getY()-r), 2*r*k, 2*r*k);
             }
+
+            
         });
 
         
