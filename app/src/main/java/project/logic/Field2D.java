@@ -14,18 +14,7 @@ public class Field2D {
     double t = 0;
 
 
-    final double e0 = 8.854187e-12;
-    Vector2D E(Vector2D pos){
-        Vector2D res = null;
-        for (Particle p: particles){
-            Vector2D r = pos.sub(p.getPos());
-            double rLen = r.len();
-            if(p.getQ()<0) return Vector2D.nullVector();
-            Vector2D ur = r.div(rLen);
-            res = res.add(ur.mul(p.getQ()/(rLen*rLen)));
-        }
-        return res.div(4*Math.PI*e0);
-    }
+   
     public Field2D(int w, int h){
         width = w;
         height = h;
@@ -33,16 +22,10 @@ public class Field2D {
         Random rand = new Random();
         particles = new LinkedList<>();
         
-        particles.add(new Particle(Vector2D.fromCoords(50, 50), 5));
-        for(int y=0; y<getHeight(); y++){
-            for(int x=0; x<getWidth(); x++){
-                int x_ = x-round(getWidth()/2);
-                int y_ = y-round(getHeight()/2);
-                Vector2D vec = E(Vector2D.fromCoords(x_, y_));//Vector2D.fromAngle(Math.toRadians(Math.random() * 360), 0.1);
-                set(x, y, vec);
-                System.out.println(vec.toString());
-            }
-        }
+        particles.add(new Particle(Vector2D.fromCoords(100, 100), 5));
+        particles.add(new Particle(Vector2D.fromCoords(200, 200), -5));
+
+
         
     }
     public Vector2D get(int x, int y){
@@ -62,6 +45,10 @@ public class Field2D {
 
     public int getWidth(){
         return width;
+    }
+
+    public List<Particle> getParticles(){
+        return particles;
     }
 
     public void update(){

@@ -35,6 +35,7 @@ public class App extends Application
         
         
         AnimTask task = new AnimTask(()->{
+            animation.update();
             animation.render();
         });
         task.start();

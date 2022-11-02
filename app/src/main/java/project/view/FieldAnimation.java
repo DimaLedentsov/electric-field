@@ -10,6 +10,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import project.logic.Field2D;
+import project.logic.Particle;
 import project.logic.Vector2D;
 import project.utils.ResizableCanvas;
 
@@ -17,7 +18,7 @@ public class FieldAnimation {
     private Field2D field;
     private ResizableCanvas canvas;
     private GraphicsContext ctx;
-    
+    double k;
     public FieldAnimation(Field2D f, ResizableCanvas c){
         field = f;
         canvas = c;
@@ -97,7 +98,36 @@ public class FieldAnimation {
         g.drawLine(x0, y0, x1, y1);
         g.drawPolyline(xs, ys, 3);
     }*/
+
+    final double e0 = 8.854187e-12;
+    public Vector2D E(Vector2D pos){
+        Vector2D res = Vector2D.nullVector();
+        pos = pos.mul(k);
+        for (Particle p: field.getParticles()){
+            
+            Vector2D r = pos.sub(p.getPos());
+            double rLen = r.len();
+           //if(p.getQ()<0) return Vector2D.nullVector();
+            Vector2D ur = r.div(rLen);
+            res = res.add(ur.mul(p.getQ()/(rLen*rLen)));
+        }
+        return res.div(4*Math.PI*e0);
+    }
+    public void update(){
+        double CELL_WIDTH = canvas.getWidth()/field.getWidth();
+        double CELL_HEIGHT = canvas.getHeight()/field.getHeight();
+        for(int y=0; y<field.getHeight(); y++){
+            for(int x=0; x<field.getWidth(); x++){
+                double x_ = x*CELL_WIDTH-Math.round(field.getWidth()/2);
+                double y_ = y*CELL_HEIGHT-Math.round(field.getHeight()/2);
+                Vector2D vec = E(Vector2D.fromCoords(x_, y_));//Vector2D.fromAngle(Math.toRadians(Math.random() * 360), 0.1);
+                field.set(x, y, vec);
+                //System.out.println(vec.toString());
+            }
+        }
+    }
     public void render(){
+        k = canvas.getResizeK();
         Platform.runLater(()->{
             double CELL_WIDTH = canvas.getWidth()/field.getWidth();
             double CELL_HEIGHT = canvas.getHeight()/field.getHeight();
@@ -111,7 +141,15 @@ public class FieldAnimation {
                     ctx.fillOval(canvasX-1.5, canvasY-1.5, 3, 3);
                 }
             }
+
+            for (Particle p: field.getParticles()){
+                double r=20;
+                if(p.getQ()>0) ctx.setFill(Color.RED);
+                else ctx.setFill(Color.BLUE);
+                ctx.fillOval((p.getPos().getX()-r)*k, (p.getPos().getY()-r)*k, 2*r*k, 2*r*k);
+            }
         });
+
         
     }
 
