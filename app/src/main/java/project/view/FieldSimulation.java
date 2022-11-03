@@ -17,13 +17,18 @@ import project.utils.ResizableCanvas;
 
 public class FieldSimulation {
     private Field2D field;
-    private ResizableCanvas canvas;
+    private Canvas canvas;
     private GraphicsContext ctx;
+    private double firstWidth, firstHeight;
+
+    private Particle selectedParticle;
     double k;
-    public FieldSimulation(Field2D f, ResizableCanvas c){
+    public FieldSimulation(Field2D f, Canvas c){
         field = f;
         canvas = c;
         ctx = c.getGraphicsContext2D();
+        firstWidth=c.getWidth();
+        firstHeight=c.getHeight();
         
     }
 
@@ -56,7 +61,7 @@ public class FieldSimulation {
         ctx.setFill(Color.BLUE);
         double x = coords.getX();
         double y = coords.getY();
-        double k = canvas.getResizeK();
+    
         /*ctx.setLineDashes(0);
         ctx.setLineWidth(1);
         Transform transform = Transform.translate(x, y);
@@ -148,7 +153,7 @@ public class FieldSimulation {
         }
     }
     public void render(){
-        k = canvas.getResizeK();
+        k = Math.sqrt((canvas.getWidth()/firstWidth)*(canvas.getHeight()/firstHeight));
         Platform.runLater(()->{
             ctx.setFill(Color.WHITE);
             ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -167,18 +172,34 @@ public class FieldSimulation {
             }
 
             for (Particle p: field.getParticles()){
-                double r=20;
+                double r=10;
                 if(p.getQ()>0) ctx.setFill(Color.RED);
                 else ctx.setFill(Color.BLUE);
 
                 Vector2D renderCoords = convertFieldCoordsToScreen(p.getPos());
                 ctx.fillOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
             }
+            if(field.getParticles().size()==0) selectedParticle=null;
+            if(selectedParticle!=null){
+                double r=20;
+
+                Vector2D renderCoords = convertFieldCoordsToScreen(selectedParticle.getPos());
+                ctx.setStroke(Color.GREEN);
+                ctx.strokeOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
+                
+            }
 
             
         });
 
         
+    }
+
+    public void selectParticle(Particle p){
+        selectedParticle=p;
+    }
+    public Particle getSelectedParticle(){
+        return selectedParticle;
     }
 
 }

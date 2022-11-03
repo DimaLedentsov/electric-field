@@ -1,5 +1,10 @@
 package project;
+import java.io.IOError;
+import java.io.IOException;
+
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,6 +19,7 @@ import project.logic.Vector2D;
 import project.utils.AnimTask;
 import project.utils.ResizableCanvas;
 import project.view.FieldSimulation;
+import project.view.controllers.AppController;
 
 public class App extends Application
 {
@@ -23,37 +29,27 @@ public class App extends Application
     }
      
     @Override
-    public void start(Stage stage) 
+    public void start(Stage stage) throws IOException
     { 
-        // Create the Canvas
-        ResizableCanvas canvas = new ResizableCanvas(400, 400);
-        // Set the width of the Canvas
 
-         
+        FXMLLoader appLoader = new FXMLLoader();
+        appLoader.setLocation(getClass().getResource("/app.fxml"));
+
+        Pane root = (Pane)appLoader.load();
+        AppController appController = appLoader.getController();
+        
+        
+        // Create the Canvas
 
          // Get the graphics context of the canvas
         
-        Field2D field = new Field2D(40, 40);
-        FieldSimulation animation = new FieldSimulation(field, canvas);
-        
-    
 
-        
-        AnimTask task = new AnimTask(()->{
-            animation.update();
-            animation.render();
-        });
-        task.start();
         // Create the Pane
-        Pane root = new Pane();
-    
+  
         // Set the Style-properties of the Pane
         
         // Add the Canvas to the Pane
-        root.getChildren().add(canvas);
-        canvas.widthProperty().bind(root.widthProperty());
-        canvas.heightProperty().bind(root.heightProperty());
-
+    
         
         // Create the Scene
         Scene scene = new Scene(root,400,400);
@@ -64,22 +60,8 @@ public class App extends Application
         // Display the Stage
         stage.show();    
         
+
+
         
-        canvas.setOnMouseClicked((e)->{
-            e.consume();
-            //Platform.runLater(()->{
-                Vector2D coords = animation.convertScreenCoordsToField(Vector2D.fromCoords(e.getX(), e.getY()));
-                //System.out.println(coords.toString());
-                double Q = 5;
-                if (e.getButton()==MouseButton.PRIMARY) Q=5;
-                else Q=-5;
-                field.getParticles().add(new Particle(coords, Q));
-
-            //});
-        });
-
-        scene.setOnKeyPressed((e)->{
-            if(e.getCode()==KeyCode.C) field.getParticles().clear();
-        });
     }
 }
