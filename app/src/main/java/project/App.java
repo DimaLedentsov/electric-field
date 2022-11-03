@@ -56,7 +56,7 @@ public class App extends Application
         // Add the Scene to the Stage
         stage.setScene(scene);
         // Set the Title of the Stage
-        stage.setTitle("Creation of a Canvas");
+        stage.setTitle("симуляция электрического поля");
         // Display the Stage
         stage.show();    
         

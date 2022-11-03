@@ -1,10 +1,14 @@
 package project.view.controllers;
 
+import java.io.File;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
@@ -32,6 +36,12 @@ public class AppController {
 
     @FXML
     private AnchorPane canvasPane;
+    @FXML
+    private MenuButton menu;
+
+    @FXML
+    private MenuItem clearButton;
+
     Field2D field;
     FieldSimulation simulation;
     @FXML
@@ -77,8 +87,18 @@ public class AppController {
     }
 
     @FXML
+    void menuSelect(ActionEvent event) {
+
+    }
+    @FXML
     void updateInput(ActionEvent event) {
 
+    }
+
+    @FXML
+    void clearAll(ActionEvent event) {
+        field.getParticles().clear();
+        simulation.selectParticle(null);
     }
 
 
@@ -132,6 +152,14 @@ public class AppController {
 		alert.setContentText(s);
         alert.setHeaderText(null);
 		alert.showAndWait();
+    }
+
+    @FXML void about(){
+        info(
+                "Над проектом работали студенты P32081:\n\n" + 
+                "Леденцов Дмитрий\n" + 
+                "Аталян Александр"
+        );
     }
 
 }
