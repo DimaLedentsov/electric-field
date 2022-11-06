@@ -73,6 +73,10 @@ public class Vector2D {
         return angle;
     }
 
+    public Vector2D rotate(double angle){
+        return Vector2D.fromCoords(Math.cos(angle)*x-Math.sin(angle)*y, Math.sin(angle)*x+Math.cos(angle)*y);
+    }
+
     public void limit(double len){
 
         if(module()>=len){
@@ -81,7 +85,16 @@ public class Vector2D {
         }
     }
 
+    public Vector2D normalize(){
+        return div(len());
+    }
+    public Vector2D unit(double len){
+        return Vector2D.fromCoords(Math.cos(getAngle())*len,Math.sin(getAngle())*len);
+    }
 
+    public double distance(Vector2D v){
+        return Math.sqrt(x*v.getX()+y*v.getY());
+    }
     @Override
     public String toString() {
         return "{" +

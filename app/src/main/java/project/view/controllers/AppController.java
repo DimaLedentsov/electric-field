@@ -136,6 +136,12 @@ public class AppController {
 
     }
 
+    
+    @FXML
+    void renderPotentialLines(ActionEvent event) {
+        
+    }
+
     public void error(String s){
         Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("ОШИБКА");

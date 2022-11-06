@@ -23,12 +23,16 @@ public class FieldSimulation {
 
     private Particle selectedParticle;
     double k;
+
+    double[][] potential;
+    double maxPotential;
     public FieldSimulation(Field2D f, Canvas c){
         field = f;
         canvas = c;
         ctx = c.getGraphicsContext2D();
         firstWidth=c.getWidth();
         firstHeight=c.getHeight();
+        potential = new double[(int)f.getHeight()][(int)f.getWidth()];
         
     }
 
@@ -140,8 +144,68 @@ public class FieldSimulation {
         }
         return res.div(4*Math.PI*e0);
     }
-    public void update(){
 
+    public double potential(Vector2D pos){
+        double F=0;
+        for(Particle p: field.getParticles()){
+            F+=Math.abs(p.getQ())/pos.sub(p.getPos()).len();
+        }
+        return F;
+    }
+    Vector2D getNextPositionAlongEquipotentialWithRK4( Vector2D position, double deltaDistance ) {
+        Vector2D initialElectricField = E( position ); // {Vector2}
+        if(initialElectricField.len()==0) return Vector2D.nullVector();
+        //assert && assert( initialElectricField.magnitude !== 0, 'the magnitude of the electric field is zero: initial Electric Field' );
+        Vector2D k1Vector = E( position ).normalize().rotate( Math.PI / 2 ); // {Vector2} normalized Vector along electricPotential
+        Vector2D k2Vector = E( position.add( k1Vector.div( deltaDistance / 2 ) ) ).normalize().rotate( Math.PI / 2 ); // {Vector2} normalized Vector along electricPotential
+        Vector2D k3Vector = E( position.add( k2Vector.div( deltaDistance / 2 ) ) ).normalize().rotate( Math.PI / 2 ); // {Vector2} normalized Vector along electricPotential
+        Vector2D k4Vector = E( position.add( k3Vector.div( deltaDistance ) ) ).normalize().rotate( Math.PI / 2 ); // {Vector2} normalized Vector along electricPotential
+        Vector2D deltaDisplacement = Vector2D.fromCoords(
+            deltaDistance * ( k1Vector.getX() + 2 * k2Vector.getX() + 2 * k3Vector.getX() + k4Vector.getX() ) / 6, 
+            deltaDistance * ( k1Vector.getY() + 2 * k2Vector.getY() + 2 * k3Vector.getY() + k4Vector.getY() ) / 6
+        );
+        return position.add( deltaDisplacement ); // {Vector2} finalPosition
+    }
+    Vector2D getNextPositionAlongEquipotentialWithElectricPotential( Vector2D position, double electricPotential, double deltaDistance ) {
+        /*
+         * General Idea: Given the electric field at point position, find an intermediate point that is 90 degrees
+         * to the left of the electric field (if deltaDistance is positive) or to the right (if deltaDistance is negative).
+         * A further correction is applied since this intermediate point will not have the same electric potential
+         * as the targeted electric potential. To find the final point, the electric potential offset between the targeted
+         * and the electric potential at the intermediate point is found. By knowing the electric field at the intermediate point
+         * the next point should be found (approximately) at a distance epsilon equal to (Delta V)/|E| of the intermediate point.
+         */
+        Vector2D initialElectricField = E( position ); // {Vector2}
+        //assert && assert( initialElectricField.magnitude !== 0, 'the magnitude of the electric field is zero: initial Electric Field' );
+        Vector2D electricPotentialNormalizedVector = initialElectricField.normalize().rotate( Math.PI / 2 ); // {Vector2} normalized Vector along electricPotential
+        Vector2D midwayPosition = ( electricPotentialNormalizedVector.mul( deltaDistance ) ).add( position ); // {Vector2}
+        Vector2D midwayElectricField = E( midwayPosition ); // {Vector2}
+        //assert && assert( midwayElectricField.magnitude !== 0, 'the magnitude of the electric field is zero: midway Electric Field ' );
+        double midwayElectricPotential = potential( midwayPosition ); //  {number}
+        double deltaElectricPotential = midwayElectricPotential - electricPotential; // {number}
+        Vector2D deltaPosition = midwayElectricField.mul( deltaElectricPotential / (midwayElectricField.len()* midwayElectricField.len())); // {Vector2}
+    
+        // if the second order correction is larger than the first, use a more computationally expensive but accurate method.
+        if ( deltaPosition.len() > Math.abs( deltaDistance ) ) {
+    
+          // use a fail safe method
+          return this.getNextPositionAlongEquipotentialWithRK4( position, deltaDistance );
+        }
+        else {
+          return midwayPosition.add( deltaPosition ); // {Vector2} finalPosition
+        }
+    }
+    public void update(){
+        maxPotential=0;
+        for(int y=0;y<field.getHeight();y++){
+            for(int x=0;x<field.getWidth();x++){
+                double p = potential(Vector2D.fromCoords(x-field.getWidth()/2, y-field.getHeight()/2));
+                maxPotential=Math.max(p, maxPotential);
+                potential[y][x]=p;
+
+            }
+        }
+        //maxPotential/=(field.getWidth()+field.getHeight());
         for(int y=0; y<field.getGridHeight(); y++){
             for(int x=0; x<field.getGridWidth(); x++){
                 Vector2D pos = convertGridCoordsToField(x, y);
@@ -160,7 +224,34 @@ public class FieldSimulation {
             ctx.setStroke(Color.BLACK);
             ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
             ctx.strokeLine(0, canvas.getHeight()/2, canvas.getWidth(), canvas.getHeight()/2);
+            
+            if(maxPotential!=0){
+                for(int y=0;y<field.getHeight();y++){
+                    for(int x=0;x<field.getWidth();x++){
+                        double p = potential[y][x];
+                        double d = p/maxPotential;
+                        if(d>=1)d=1;
+                        if(d<0.25)d*=4;
+                        //System.out.println(d);
+                        Color c = Color.rgb((int)(d*255), 0, 0);
+                        ctx.setFill(c);
+                        //System.out.print(d);
+                        Vector2D renderCoords = convertFieldCoordsToScreen(Vector2D.fromCoords(x-field.getWidth()/2, y-field.getHeight()/2));
+                        ctx.fillRect(renderCoords.getX(), renderCoords.getY(), canvas.getWidth()/field.getWidth(),canvas.getHeight()/field.getHeight());
+                    }
+                }
+            }
 
+            Vector2D point = Vector2D.fromCoords(0, 0);
+            double pot = potential(point);
+            final int len = 10000;
+            for(int i=0;i<len;i++){
+                point = getNextPositionAlongEquipotentialWithElectricPotential(point, pot, 0.1);
+                ctx.setFill(Color.GREEN);
+                double r =2;
+                Vector2D renderCoords = convertFieldCoordsToScreen(point);
+                ctx.fillOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
+            }
             for(int y=0; y<field.getGridHeight(); y++){
                 for(int x=0; x<field.getGridWidth(); x++){
                     Vector2D vec = field.get(x, y);
@@ -188,6 +279,10 @@ public class FieldSimulation {
                 ctx.strokeOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
                 
             }
+
+
+            
+            
 
             
         });
