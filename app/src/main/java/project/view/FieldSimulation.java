@@ -35,7 +35,7 @@ public class FieldSimulation {
     private double firstWidth, firstHeight;
 
     final int MAX_STEPS = 500;
-    final int MIN_STEPS = 100;
+    final int MIN_STEPS = 10;
     final double MIN_EPSILON_DISTANCE = 0.1;
     final double MAX_EPSILON_DISTANCE = 0.5;
     final double K_CONSTANT = 9;
@@ -191,11 +191,11 @@ public class FieldSimulation {
     public double potential(Vector2D pos){
         double F=0;
         for(Particle p: field.getParticles()){
-            F+=Math.abs(p.getQ())/pos.sub(p.getPos()).len();
+            F+=(p.getQ())/pos.sub(p.getPos()).len();
         }
         return F;
     }
-   /* public double potential( Vector2D position ) {
+    /*public double potential( Vector2D position ) {
         double electricPotential = 0;
     
         for(Particle chargedParticle: field.getParticles()){
@@ -399,7 +399,7 @@ public class FieldSimulation {
     
               // we want to perform more steps as the two head get closer but we want to avoid the two heads to pass
               // one another. Let's reduce the epsilon distance
-              clockwiseEpsilonDistance = approachDistance / 3;
+              clockwiseEpsilonDistance = approachDistance/3;/// 6; //TODO: ???
               counterClockwiseEpsilonDistance = -clockwiseEpsilonDistance;
               if ( approachDistance < 2 * MIN_EPSILON_DISTANCE ) {
     
@@ -422,7 +422,7 @@ public class FieldSimulation {
           // this is very difficult to come up with such a scenario. so far this
           // was encountered only with a pure quadrupole configuration.
           // let's redo the entire process but starting a tad to the right so we don't get stuck in our search
-          Vector2D weeVector = Vector2D.fromCoords(0.1, 0.1);//Vector2D.fromCoords( 0.00031415, 0.00027178 ); // (pi, e)
+          Vector2D weeVector = Vector2D.fromCoords(0.05, 0.001);//Vector2D.fromCoords( 0.00031415, 0.00027178 ); // (pi, e)
           return getPotentionalLine( position.add( weeVector ) );
         }
     
@@ -455,7 +455,7 @@ public class FieldSimulation {
         Vector2D finalDisplacement = finalPoint.sub( initialPoint );
         return Math.abs( midwayDisplacement.crossScalar( finalDisplacement.normalize() ) );
     }
-    List<Vector2D> getPrunedLine( List<Vector2D> positionArray ) {
+    public List<Vector2D> getPrunedLine( List<Vector2D> positionArray ) {
         int length = positionArray.size();
         List<Vector2D> prunedPositionArray = new LinkedList<>(); // {Array.<Vector2>}
     

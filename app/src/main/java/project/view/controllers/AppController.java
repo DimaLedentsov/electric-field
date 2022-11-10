@@ -109,6 +109,8 @@ public class AppController {
     void remove(ActionEvent event) {
         if(simulation.getSelectedParticle()!=null){
             field.getParticles().remove(simulation.getSelectedParticle());
+            simulation.updateField();
+            field.getLines().clear();
             simulation.selectParticle(null);
         }
 
@@ -156,6 +158,7 @@ public class AppController {
 
     @FXML
     void canvasClick(MouseEvent e) {
+        e.consume();
         try{
         //Platform.runLater(()->{
             Vector2D coords = simulation.convertScreenCoordsToField(Vector2D.fromCoords(e.getX(), e.getY()));
@@ -178,7 +181,7 @@ public class AppController {
                 else if(choiceBox.getSelectionModel().getSelectedItem()==ItemType.POTENTIONAL_LINE){
          
                     Platform.runLater(()->{
-                        List<Vector2D> line = simulation.getPotentionalLine(coords);
+                        List<Vector2D> line = simulation.getPrunedLine(simulation.getPotentionalLine(coords));
                         field.getLines().add(new PotentialLine(colorPicker.getValue(), coords,simulation.potential(coords), line));
                         simulation.setPotentionalLineColor(colorPicker.getValue());
                     });
