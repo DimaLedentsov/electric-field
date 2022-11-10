@@ -88,12 +88,23 @@ public class Vector2D {
     public Vector2D normalize(){
         return div(len());
     }
+    public double angleBetween(Vector2D v){
+    
+        return Math.atan2(v.getY(),v.getX()) - Math.atan2(y,x);
+    }
     public Vector2D unit(double len){
         return Vector2D.fromCoords(Math.cos(getAngle())*len,Math.sin(getAngle())*len);
     }
 
     public double distance(Vector2D v){
-        return Math.sqrt(x*v.getX()+y*v.getY());
+        return Math.sqrt(((v.getY() - y) * (v.getY() - y) + (v.getX() - x) * (v.getX() - x)));
+    }
+    public double distanceSquared(Vector2D v){
+        return distance(v)*distance(v);
+    }
+
+    public double crossScalar(Vector2D v){
+        return len()*v.len()*Math.cos(angleBetween(v));
     }
     @Override
     public String toString() {

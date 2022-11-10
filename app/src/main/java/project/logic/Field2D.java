@@ -1,8 +1,10 @@
 package project.logic;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static java.lang.Math.*;
 public class Field2D {
@@ -14,6 +16,8 @@ public class Field2D {
     private double height;
 
     private List<Particle> particles;
+
+    private List<List<Vector2D>> lines;
     double t = 0;
 
 
@@ -26,6 +30,9 @@ public class Field2D {
         grid = new Vector2D[h][w];
         Random rand = new Random();
         particles = new LinkedList<>();
+        
+        lines = new LinkedList<List<Vector2D>>();
+        lines = Collections.synchronizedList(lines);
                 
     }
     public Vector2D get(int x, int y){
@@ -59,6 +66,13 @@ public class Field2D {
         return particles;
     }
 
+    public List<List<Vector2D>> getLines(){
+        return lines;
+    }
+
+    public boolean containsPoint(Vector2D point){
+        return(Math.abs(point.getX())<getWidth()/2 || Math.abs(point.getY())<getHeight()/2);
+    }
 
     public void update(){
 
