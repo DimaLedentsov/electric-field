@@ -17,7 +17,7 @@ public class Field2D {
 
     private List<Particle> particles;
 
-    private List<List<Vector2D>> lines;
+    private List<PotentialLine> lines;
     double t = 0;
 
 
@@ -31,7 +31,7 @@ public class Field2D {
         Random rand = new Random();
         particles = new LinkedList<>();
         
-        lines = new LinkedList<List<Vector2D>>();
+        lines = new LinkedList<PotentialLine>();
         lines = Collections.synchronizedList(lines);
                 
     }
@@ -66,7 +66,7 @@ public class Field2D {
         return particles;
     }
 
-    public List<List<Vector2D>> getLines(){
+    public List<PotentialLine> getLines(){
         return lines;
     }
 

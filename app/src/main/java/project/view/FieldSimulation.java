@@ -24,6 +24,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import project.logic.Field2D;
 import project.logic.Particle;
+import project.logic.PotentialLine;
 import project.logic.Vector2D;
 import project.utils.ResizableCanvas;
 
@@ -517,15 +518,20 @@ public class FieldSimulation {
             */
             //line = getPrunedLine(line);
             if(field.getLines().size()!=0){
-                ctx.setStroke(lineColor);
                 ctx.setLineWidth(1);
-                for(List<Vector2D> line: field.getLines()){
+                for(PotentialLine l: field.getLines()){
+                    ctx.setStroke(l.getColor());
+                    List<Vector2D> line = l.getPoints();
                     for(int i=0;i<line.size()-1;i++){
 
                         Vector2D p1 = convertFieldCoordsToScreen(line.get(i));
                         Vector2D p2 = convertFieldCoordsToScreen(line.get(i+1));
                         ctx.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                        
                     }
+                    //Vector2D textCoords = convertFieldCoordsToScreen(l.getPos());
+                    //ctx.setStroke(Color.BLACK);
+                    //ctx.strokeText(Double.toString(Math.round(l.getPotential()*1000.0)/1000.0), textCoords.getX(), textCoords.getY());
                 }
             }
 

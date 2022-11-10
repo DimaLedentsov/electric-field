@@ -22,10 +22,9 @@
               <items>
                 <MenuItem fx:id="clearButton" mnemonicParsing="false" onAction="#clearAll" text="очистить все" />
                 <MenuItem mnemonicParsing="false" onAction="#about" text="о нас" />
-                  <MenuItem mnemonicParsing="false" onAction="#renderPotentialLines" text="линии потенциала" />
               </items>
             </MenuButton>
-            <ChoiceBox fx:id="choiceBox" prefHeight="26.0" prefWidth="97.0" />
+            <ChoiceBox fx:id="choiceBox" prefHeight="26.0" prefWidth="122.0" />
             <VBox>
                <children>
                   <HBox fx:id="chargeSettings">
@@ -38,6 +37,7 @@
                   </HBox>
                   <HBox fx:id="lineSettings">
                      <children>
+                        <Button mnemonicParsing="false" onAction="#clearLines" text="очистить" />
                         <ColorPicker fx:id="colorPicker">
                            <value>
                               <Color red="1.0" blue="0.6166666746139526" />

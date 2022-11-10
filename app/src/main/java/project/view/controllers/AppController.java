@@ -22,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import project.logic.Field2D;
 import project.logic.Particle;
+import project.logic.PotentialLine;
 import project.logic.Vector2D;
 import project.utils.AnimTask;
 import project.view.FieldSimulation;
@@ -126,6 +127,8 @@ public class AppController {
                 }
             }
             simulation.getSelectedParticle().setQ(Q);
+            simulation.updateField();
+            field.getLines().clear();
         }
     }
 
@@ -139,9 +142,15 @@ public class AppController {
     }
 
     @FXML
+    void clearLines(ActionEvent event) {
+        field.getLines().clear();
+    }
+    @FXML
     void clearAll(ActionEvent event) {
+        field.getLines().clear();
         field.getParticles().clear();
         simulation.selectParticle(null);
+        simulation.updateField();
     }
 
 
@@ -171,7 +180,7 @@ public class AppController {
          
                     Platform.runLater(()->{
                         List<Vector2D> line = simulation.getPotentionalLine(coords);
-                        field.getLines().add(line);
+                        field.getLines().add(new PotentialLine(colorPicker.getValue(), coords,simulation.potential(coords), line));
                         simulation.setPotentionalLineColor(colorPicker.getValue());
                     });
                     
