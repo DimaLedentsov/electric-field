@@ -22,6 +22,7 @@ javafx {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -42,7 +43,8 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'project.App'
+    mainClass = 'project.Main'
+    mainClassName = 'project.Main'
 }
 
 tasks.named('test') {
@@ -52,7 +54,7 @@ tasks.named('test') {
 
 jar {
     manifest {
-        attributes "Main-Class": "project.App"
+        attributes "Main-Class": "project.Main"
     }
     /*from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }

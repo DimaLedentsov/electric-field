@@ -403,9 +403,6 @@ public class FieldSimulation {
               counterClockwiseEpsilonDistance = -clockwiseEpsilonDistance;
               if ( approachDistance < 2 * MIN_EPSILON_DISTANCE ) {
     
-                System.out.println("Yes!");
-                System.out.println(approachDistance);
-                System.out.println(MIN_EPSILON_DISTANCE);
                 // if the clockwise and counterclockwise points are close to one another, set this.isLineClosed to true to get out of this while loop
                 isLineClosed = true;
               }
@@ -437,7 +434,6 @@ public class FieldSimulation {
         // let's return the entire array, i.e. the reversed clockwise array, the initial position, and the counterclockwise array
         reversedArray.add(position);
         reversedArray.addAll(counterClockwisePositionArray );
-        System.out.println(stepCounter);
         /*
         PrintWriter writer =  null;
         try {

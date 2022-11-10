@@ -156,7 +156,6 @@ public class AppController {
 
     @FXML
     void canvasClick(MouseEvent e) {
-        System.out.println("aa");
         try{
         //Platform.runLater(()->{
             Vector2D coords = simulation.convertScreenCoordsToField(Vector2D.fromCoords(e.getX(), e.getY()));

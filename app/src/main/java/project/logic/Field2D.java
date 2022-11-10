@@ -33,6 +33,12 @@ public class Field2D {
         
         lines = new LinkedList<PotentialLine>();
         lines = Collections.synchronizedList(lines);
+        for(int y=0; y<h; y++){
+            for(int x=0; x<w; x++){
+                set(x, y, Vector2D.nullVector());
+                //System.out.println(vec.toString());
+            }
+        }
                 
     }
     public Vector2D get(int x, int y){
