@@ -489,7 +489,8 @@ public class FieldSimulation {
     public void render(){
         k = Math.sqrt((canvas.getWidth()/firstWidth)*(canvas.getHeight()/firstHeight));
         Platform.runLater(()->{
-            ctx.setFill(Color.WHITE);
+            int grey = 50;
+            ctx.setFill(Color.rgb(grey,grey,grey));
             ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
             ctx.setStroke(Color.BLACK);
             ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
