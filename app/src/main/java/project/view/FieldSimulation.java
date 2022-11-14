@@ -491,16 +491,79 @@ public class FieldSimulation {
         prunedPositionArray.add( positionArray.get( length - 1 ) );
         return prunedPositionArray;
       }
+
+    void clearScreen(){
+        int grey = 50;
+        ctx.setFill(Color.rgb(grey,grey,grey));
+        ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    void renderAxis(){
+        ctx.setStroke(Color.BLACK);
+        ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
+        ctx.strokeLine(0, canvas.getHeight()/2, canvas.getWidth(), canvas.getHeight()/2);
+        //double n = 50;
+        //double x = field.getWidth()/2;
+        //for(int i=0; i<n; i++){
+        //        Vector2D textCoords = convertFieldCoordsToScreen(l.getPos());
+        //        ctx.setStroke(Color.BLACK);
+        //        ctx.strokeText(Double.toString(Math.round(l.getPotential()*1000.0)/1000.0), textCoords.getX(), textCoords.getY());
+        //    }
+        //}
+    }
+    void renderLines(){
+        if(field.getLines().size()!=0){
+            ctx.setLineWidth(1);
+            for(PotentialLine l: field.getLines()){
+                ctx.setStroke(l.getColor());
+                List<Vector2D> line = l.getPoints();
+                for(int i=0;i<line.size()-1;i++){
+
+                    Vector2D p1 = convertFieldCoordsToScreen(line.get(i));
+                    Vector2D p2 = convertFieldCoordsToScreen(line.get(i+1));
+                    ctx.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                    
+                }
+                //Vector2D textCoords = convertFieldCoordsToScreen(l.getPos());
+                //ctx.setStroke(Color.BLACK);
+                //ctx.strokeText(Double.toString(Math.round(l.getPotential()*1000.0)/1000.0), textCoords.getX(), textCoords.getY());
+            }
+        }
+    }
+    void renderField(){
+        for(int y=0; y<field.getGridHeight(); y++){
+            for(int x=0; x<field.getGridWidth(); x++){
+                Vector2D vec = field.get(x, y);
+                Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
+                drawArrow(renderCoords, 10, vec.getAngle());
+                //ctx.setFill(Color.RED);
+                //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
+            }
+        }
+    }
+    void renderParticles(){
+        for (Particle p: field.getParticles()){
+            double r=10;
+            if(p.getQ()>0) ctx.setFill(Color.RED);
+            else ctx.setFill(Color.BLUE);
+
+            Vector2D renderCoords = convertFieldCoordsToScreen(p.getPos());
+            ctx.fillOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
+        }
+        if(field.getParticles().size()==0) selectedParticle=null;
+        if(selectedParticle!=null){
+            double r=20;
+
+            Vector2D renderCoords = convertFieldCoordsToScreen(selectedParticle.getPos());
+            ctx.setStroke(Color.GREEN);
+            ctx.strokeOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
+            
+        }
+    }
     public void render(){
         k = Math.sqrt((canvas.getWidth()/firstWidth)*(canvas.getHeight()/firstHeight));
         Platform.runLater(()->{
-            int grey = 50;
-            ctx.setFill(Color.rgb(grey,grey,grey));
-            ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            ctx.setStroke(Color.BLACK);
-            ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
-            ctx.strokeLine(0, canvas.getHeight()/2, canvas.getWidth(), canvas.getHeight()/2);
-            /*/
+                        /*/
             if(maxPotential!=0){
                 for(int y=0;y<field.getHeight();y++){
                     for(int x=0;x<field.getWidth();x++){
@@ -519,59 +582,13 @@ public class FieldSimulation {
             }
             */
             //line = getPrunedLine(line);
-            
-            if(field.getLines().size()!=0 && showLines){
-                ctx.setLineWidth(1);
-                for(PotentialLine l: field.getLines()){
-                    ctx.setStroke(l.getColor());
-                    List<Vector2D> line = l.getPoints();
-                    for(int i=0;i<line.size()-1;i++){
-
-                        Vector2D p1 = convertFieldCoordsToScreen(line.get(i));
-                        Vector2D p2 = convertFieldCoordsToScreen(line.get(i+1));
-                        ctx.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-                        
-                    }
-                    //Vector2D textCoords = convertFieldCoordsToScreen(l.getPos());
-                    //ctx.setStroke(Color.BLACK);
-                    //ctx.strokeText(Double.toString(Math.round(l.getPotential()*1000.0)/1000.0), textCoords.getX(), textCoords.getY());
-                }
-            }
-
-            if(showField){
-                for(int y=0; y<field.getGridHeight(); y++){
-                    for(int x=0; x<field.getGridWidth(); x++){
-                        Vector2D vec = field.get(x, y);
-                        Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
-                        drawArrow(renderCoords, 10, vec.getAngle());
-                        //ctx.setFill(Color.RED);
-                        //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
-                    }
-                }
-            }
-
-            for (Particle p: field.getParticles()){
-                double r=10;
-                if(p.getQ()>0) ctx.setFill(Color.RED);
-                else ctx.setFill(Color.BLUE);
-
-                Vector2D renderCoords = convertFieldCoordsToScreen(p.getPos());
-                ctx.fillOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
-            }
-            if(field.getParticles().size()==0) selectedParticle=null;
-            if(selectedParticle!=null){
-                double r=20;
-
-                Vector2D renderCoords = convertFieldCoordsToScreen(selectedParticle.getPos());
-                ctx.setStroke(Color.GREEN);
-                ctx.strokeOval((renderCoords.getX()-r*k), (renderCoords.getY()-r*k), 2*r*k, 2*r*k);
-                
-            }
-
+            clearScreen();
+            renderAxis();
+            if(showField) renderField();
+            if(showLines) renderLines();
 
             
-            
-
+            renderParticles();
             
         });
 
