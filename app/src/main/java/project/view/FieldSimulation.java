@@ -422,7 +422,7 @@ public class FieldSimulation {
           // this is very difficult to come up with such a scenario. so far this
           // was encountered only with a pure quadrupole configuration.
           // let's redo the entire process but starting a tad to the right so we don't get stuck in our search
-          Vector2D weeVector = Vector2D.fromCoords(0.05, 0.001);//Vector2D.fromCoords( 0.00031415, 0.00027178 ); // (pi, e)
+          Vector2D weeVector = Vector2D.fromCoords(Math.PI, Math.E);//Vector2D.fromCoords( 0.00031415, 0.00027178 ); // (pi, e)
           return getPotentionalLine( position.add( weeVector ) );
         }
     
