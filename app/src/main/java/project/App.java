@@ -70,6 +70,7 @@ public class App extends Application
                            MainDemo.class.getResource("/css/jfoenix-main-demo.css").toExternalForm());
         // Add the Scene to the Stage*/
         //scene.getStylesheets().add(JMetroStyleClass.BACKGROUND);
+        //scene.getStylesheets().add(getClass().getResource("app.css").toExternalForm());
         stage.setScene(scene);
         // Set the Title of the Stage
         stage.setTitle("симуляция электрического поля");

@@ -39,6 +39,9 @@ public class FieldSimulation {
     final double MIN_EPSILON_DISTANCE = 0.1;
     final double MAX_EPSILON_DISTANCE = 0.5;
     final double K_CONSTANT = 9;
+
+    private boolean showField;
+    private boolean showLines;
     
     private Particle selectedParticle;
     private Color lineColor;
@@ -47,6 +50,8 @@ public class FieldSimulation {
     double[][] potential;
     double maxPotential;
     public FieldSimulation(Field2D f, Canvas c){
+        showField = true;
+        showLines = true;
         field = f;
         canvas = c;
         ctx = c.getGraphicsContext2D();
@@ -514,7 +519,8 @@ public class FieldSimulation {
             }
             */
             //line = getPrunedLine(line);
-            if(field.getLines().size()!=0){
+            
+            if(field.getLines().size()!=0 && showLines){
                 ctx.setLineWidth(1);
                 for(PotentialLine l: field.getLines()){
                     ctx.setStroke(l.getColor());
@@ -532,13 +538,15 @@ public class FieldSimulation {
                 }
             }
 
-            for(int y=0; y<field.getGridHeight(); y++){
-                for(int x=0; x<field.getGridWidth(); x++){
-                    Vector2D vec = field.get(x, y);
-                    Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
-                    drawArrow(renderCoords, 10, vec.getAngle());
-                    //ctx.setFill(Color.RED);
-                    //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
+            if(showField){
+                for(int y=0; y<field.getGridHeight(); y++){
+                    for(int x=0; x<field.getGridWidth(); x++){
+                        Vector2D vec = field.get(x, y);
+                        Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
+                        drawArrow(renderCoords, 10, vec.getAngle());
+                        //ctx.setFill(Color.RED);
+                        //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
+                    }
                 }
             }
 
@@ -575,6 +583,13 @@ public class FieldSimulation {
     }
     public Particle getSelectedParticle(){
         return selectedParticle;
+    }
+
+    public void setShowField(boolean f){
+        showField = f;
+    }
+    public void setShowLines(boolean f){
+        showLines = f;
     }
 
 }

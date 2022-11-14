@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionModel;
@@ -61,6 +63,12 @@ public class AppController {
     @FXML
     private ColorPicker colorPicker;
 
+    @FXML
+    private CheckBox showFieldCheckBox;
+
+    @FXML
+    private CheckBox showLinesCheckBox;
+
     Field2D field;
     FieldSimulation simulation;
     void updateSettings(){
@@ -102,8 +110,25 @@ public class AppController {
         choiceBox.setOnAction((e)->{
             updateSettings();
         });
+
+        menu.getItems().forEach((e)->{
+            if (e instanceof CustomMenuItem){
+                CustomMenuItem cmi = (CustomMenuItem)e;
+                cmi.setHideOnClick(false);
+
+            }
+        });
     
        
+    }
+    @FXML
+    void showField(ActionEvent event) {
+        simulation.setShowField(showFieldCheckBox.isSelected());
+    }
+
+    @FXML
+    void showLines(ActionEvent event) {
+        simulation.setShowLines(showLinesCheckBox.isSelected());
     }
     @FXML
     void remove(ActionEvent event) {
@@ -136,7 +161,7 @@ public class AppController {
 
     @FXML
     void menuSelect(ActionEvent event) {
-
+        event.consume();
     }
     @FXML
     void updateInput(ActionEvent event) {
