@@ -142,6 +142,15 @@ public class AppController {
     void updateInput(ActionEvent event) {
 
     }
+    @FXML
+    void changeSign(ActionEvent event) {
+        if(inputText.getText().startsWith("-")){
+            inputText.setText(inputText.getText().replace("-", ""));
+        }
+        else{
+            inputText.setText("-" + inputText.getText());
+        }
+    }
 
     @FXML
     void clearLines(ActionEvent event) {

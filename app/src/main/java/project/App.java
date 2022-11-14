@@ -61,7 +61,7 @@ public class App extends Application
        // Jfoeni
         // Create the Scene
         //root.getStyleClass().add(JMetroStyleClass.BACKGROUND);
-        Scene scene = new Scene(root,600,400);
+        Scene scene = new Scene(root,650,400);
         //JMetro jMetro = new JMetro(Style.LIGHT);
         //jMetro.setScene(scene); 
         /*final ObservableList<String> stylesheets = scene.getStylesheets();
