@@ -416,7 +416,7 @@ public class FieldSimulation {
     
         } // end of while()
     
-        if ( !isLineClosed && isEquipotentialLineTerminatingInsideBounds ) {
+        if ( !isLineClosed && !isEquipotentialLineTerminatingInsideBounds ) { //&isEquipotentialLineTerminatingInsideBounds
     
           // see https://github.com/phetsims/charges-and-fields/issues/1
           // this is very difficult to come up with such a scenario. so far this
