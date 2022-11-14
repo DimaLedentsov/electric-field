@@ -77,7 +77,7 @@ public class Field2D {
     }
 
     public boolean containsPoint(Vector2D point){
-        return(Math.abs(point.getX())<getWidth()/2 || Math.abs(point.getY())<getHeight()/2);
+        return(Math.abs(point.getX())<=getWidth()/2 && Math.abs(point.getY())<=getHeight()/2);
     }
 
     public void update(){

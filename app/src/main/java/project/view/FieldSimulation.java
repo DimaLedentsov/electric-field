@@ -34,7 +34,7 @@ public class FieldSimulation {
     private GraphicsContext ctx;
     private double firstWidth, firstHeight;
 
-    final int MAX_STEPS = 500;
+    final int MAX_STEPS = 1000;
     final int MIN_STEPS = 10;
     final double MIN_EPSILON_DISTANCE = 0.1;
     final double MAX_EPSILON_DISTANCE = 0.5;
@@ -416,15 +416,15 @@ public class FieldSimulation {
     
         } // end of while()
     
-        if ( !isLineClosed && !isEquipotentialLineTerminatingInsideBounds ) { //&isEquipotentialLineTerminatingInsideBounds
-    
+        /*if ( !isLineClosed && isEquipotentialLineTerminatingInsideBounds ) { //&isEquipotentialLineTerminatingInsideBounds
+            System.out.println("!!!");
           // see https://github.com/phetsims/charges-and-fields/issues/1
           // this is very difficult to come up with such a scenario. so far this
           // was encountered only with a pure quadrupole configuration.
           // let's redo the entire process but starting a tad to the right so we don't get stuck in our search
           Vector2D weeVector = Vector2D.fromCoords(Math.PI, Math.E);//Vector2D.fromCoords( 0.00031415, 0.00027178 ); // (pi, e)
           return getPotentionalLine( position.add( weeVector ) );
-        }
+        }*/
     
         // let's order all the positions (including the initial point) in an array in a counterclockwise fashion
         
