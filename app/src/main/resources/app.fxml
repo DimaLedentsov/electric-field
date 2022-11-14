@@ -33,7 +33,7 @@
                       <Button id="removeButton" fx:id="removeButton" mnemonicParsing="false" onAction="#remove" text="удалить" />
                         <Button fx:id="updateButton" mnemonicParsing="false" onAction="#update" text="обновить" />
                         <Label alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="58.0" text="Заряд: " />
-                        <TextField fx:id="inputText" onAction="#updateInput" promptText="введите заряд" text="1" />
+                        <TextField fx:id="inputText" onAction="#updateInput" prefHeight="26.0" prefWidth="82.0" promptText="введите заряд" text="1" />
                      </children>
                   </HBox>
                   <HBox fx:id="lineSettings">
