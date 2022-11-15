@@ -67,6 +67,17 @@
                         </ColorPicker>
                      </children>
                   </HBox>
+                  <HBox fx:id="planeSettings">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#removePlane" text="удалить" />
+                        <Label alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="181.0" text="Поверхностная плотность:" />
+                        <TextField fx:id="chargeDensity" prefHeight="26.0" prefWidth="84.0">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
         </items>

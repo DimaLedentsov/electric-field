@@ -24,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import project.logic.Field2D;
 import project.logic.Particle;
+import project.logic.Plane;
 import project.logic.PotentialLine;
 import project.logic.Vector2D;
 import project.utils.AnimTask;
@@ -69,6 +70,13 @@ public class AppController {
     @FXML
     private CheckBox showLinesCheckBox;
 
+    
+    @FXML
+    private TextField chargeDensity;
+
+    @FXML
+    private HBox planeSettings;
+
     Field2D field;
     FieldSimulation simulation;
     void updateSettings(){
@@ -87,6 +95,13 @@ public class AppController {
             lineSettings.setVisible(true);
             lineSettings.setManaged(true);
         }
+        if(!(choiceBox.getSelectionModel().getSelectedItem()==ItemType.PLANE)){
+            planeSettings.setVisible(false);
+            planeSettings.setManaged(false);
+        } else{
+            planeSettings.setVisible(true);
+            planeSettings.setManaged(true);
+        }
     }
     @FXML
     void initialize(){
@@ -95,6 +110,8 @@ public class AppController {
         field = new Field2D(40, 40);
         simulation = new FieldSimulation(field, canvas);
 
+        field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.0006,false));
+        simulation.updateField();
         AnimTask task = new AnimTask(()->{
             simulation.update();
             simulation.render();
@@ -141,6 +158,7 @@ public class AppController {
 
     }
 
+
     @FXML
     void update(ActionEvent event) {
         if(simulation.getSelectedParticle()!=null){
@@ -167,6 +185,11 @@ public class AppController {
     void updateInput(ActionEvent event) {
 
     }
+
+    @FXML
+    void removePlane(ActionEvent event) {
+
+    }
     @FXML
     void changeSign(ActionEvent event) {
         if(inputText.getText().startsWith("-")){
@@ -185,6 +208,7 @@ public class AppController {
     void clearAll(ActionEvent event) {
         field.getLines().clear();
         field.getParticles().clear();
+        field.getPlanes().clear();
         simulation.selectParticle(null);
         simulation.updateField();
     }

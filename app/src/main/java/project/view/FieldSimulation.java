@@ -24,6 +24,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import project.logic.Field2D;
 import project.logic.Particle;
+import project.logic.Plane;
 import project.logic.PotentialLine;
 import project.logic.Vector2D;
 import project.utils.ResizableCanvas;
@@ -34,10 +35,11 @@ public class FieldSimulation {
     private GraphicsContext ctx;
     private double firstWidth, firstHeight;
 
-    final int MAX_STEPS = 1000;
-    final int MIN_STEPS = 10;
-    final double MIN_EPSILON_DISTANCE = 0.1;
-    final double MAX_EPSILON_DISTANCE = 0.5;
+    
+    final int MAX_STEPS = 1000; //1000; максимальное колво точек в линии
+    final int MIN_STEPS = 10; //10 минимальное число точек. попробовать увеличить если "обрубки",
+    final double MIN_EPSILON_DISTANCE = 0.1; //0.1; минимальное расстояние на котором ищется след. точка, попробовать поуменьшать
+    final double MAX_EPSILON_DISTANCE = 0.5; //0.5; макс расстояние на котором ищется точка, попробовать увеличить
     final double K_CONSTANT = 9;
 
     private boolean showField;
@@ -94,32 +96,6 @@ public class FieldSimulation {
         double x = coords.getX();
         double y = coords.getY();
     
-        /*ctx.setLineDashes(0);
-        ctx.setLineWidth(1);
-        Transform transform = Transform.translate(x, y);
-        transform = transform.createConcatenation(Transform.rotate(Math.toDegrees(angle), 0, 0));
-        ctx.setTransform(new Affine(transform));
-        ctx.strokeLine(0, 0, length, 0);
-        double arrSize = length*0.1;
-        ctx.fillPolygon(new double[]{length, length- 2* arrSize, length - 2* arrSize}, new double[]{0, -arrSize, arrSize},
-      3);
-
-        ctx.restore();*/
-        //length*=k;
-        /*ctx.setLineDashes(0);
-        ctx.setLineWidth(1);
-        Transform transform = Transform.translate(x, y);
-        transform = transform.createConcatenation(Transform.rotate(Math.toDegrees(angle), 0, 0));
-        ctx.setTransform(new Affine(transform));
-        double arrSize = length*0.3;
-        ctx.fillPolygon(new double[]{length, length- 3* arrSize, length - 3* arrSize}, new double[]{0, -arrSize, arrSize},3);
-
-
-        ctx.setTransform(new Affine(Transform.translate(0, 0).createConcatenation(Transform.rotate(0,0,0))));
-        ctx.setFill(Color.RED);
-        ctx.fillOval(x, y, 3, 3);
-        ctx.strokeText("Hello Canvas", 150, 100);
-    */
         length*=k;
         double offs = 15 * Math.PI / 180.0; 
         angle += Math.PI;
@@ -132,45 +108,52 @@ public class FieldSimulation {
                 y + (length/2 * Math.sin(angle-offs))
         };
         ctx.fillPolygon(xs, ys, 3);
-        /*/
-        ctx.fillPolygon(new double[]{
-            coords.getX(),
-            coords.getX()+(length * Math.tan(angle)),
-            coords.getX()-(length * Math.tan(angle))
-        }, new double[]{
-            coords.getX(),
-            coords.getY()-length,
-            coords.getY()-length
-        }, 3); 
-        */
+
         
 
     }
-    /*/
-    static public void drawArrow(Graphics g, int x0, int y0, int x1,
-            int y1, int headLength, int headAngle) {
-        double offs = headAngle * Math.PI / 180.0;
-        double angle = Math.atan2(y0 - y1, x0 - x1);
-        int[] xs = { x1 + (int) (headLength * Math.cos(angle + offs)), x1,
-                x1 + (int) (headLength * Math.cos(angle - offs)) };
-        int[] ys = { y1 + (int) (headLength * Math.sin(angle + offs)), y1,
-                y1 + (int) (headLength * Math.sin(angle - offs)) };
-        g.drawLine(x0, y0, x1, y1);
-        g.drawPolyline(xs, ys, 3);
-    }*/
+
 
     final double e0 = 8.854187e-12;
     public Vector2D E(Vector2D pos){
-        Vector2D res = Vector2D.nullVector();
+        Vector2D Echarges = Vector2D.nullVector();
         for (Particle p: field.getParticles()){
             
             Vector2D r = pos.sub(p.getPos());
             double rLen = r.len();
            //if(p.getQ()<0) return Vector2D.nullVector();
             Vector2D ur = r.div(rLen);
-            res = res.add(ur.mul(p.getQ()/(rLen*rLen)));
+            Echarges = Echarges.add(ur.mul(p.getQ()/(rLen*rLen)));
         }
-        return res.div(4*Math.PI*e0);
+        Echarges = Echarges.div(4*Math.PI*e0);
+
+        Vector2D Eplanes = Vector2D.nullVector();
+        
+        for (Plane p: field.getPlanes()){
+            
+            //определить слева или справа плоскости D>0 справа
+
+            //D = (х3 - х1) * (у2 - у1) - (у3 - у1) * (х2 - х1)
+            double side = p.sideOfPoint(pos);
+            Vector2D E_direction = Vector2D.nullVector();
+            if(side>0){
+            
+                E_direction = p.getDirection()
+                    .rotate(p.isNegative()? Math.PI/2: Math.PI*1.5);
+            }else if (side<0){
+                E_direction = p.getDirection().neg()
+                    .rotate(p.isNegative()? Math.PI/2: Math.PI*1.5);
+            }
+            double E_module = p.getDensity()/(2*e0);
+           //if(p.getQ()<0) return Vector2D.nullVector();
+            Vector2D E = E_direction.mul(E_module);
+            Eplanes = Eplanes.add(E);
+        }
+
+        return Echarges.add(Eplanes);
+
+
+
     }
 
 
@@ -197,6 +180,10 @@ public class FieldSimulation {
         double F=0;
         for(Particle p: field.getParticles()){
             F+=(p.getQ())/pos.sub(p.getPos()).len();
+        }
+
+        for(Plane p: field.getPlanes()){
+            F+=(p.getDensity()/(2*e0))*p.sideOfPoint(pos)*p.distanceToPoint(pos);
         }
         return F;
     }
@@ -272,7 +259,7 @@ public class FieldSimulation {
         }
     }
     public void update(){
-        /*maxPotential=0;
+        maxPotential=0;
         for(int y=0;y<field.getHeight();y++){
             for(int x=0;x<field.getWidth();x++){
                 double p = potential(Vector2D.fromCoords(x-field.getWidth()/2, y-field.getHeight()/2));
@@ -280,7 +267,7 @@ public class FieldSimulation {
                 potential[y][x]=p;
 
             }
-        }*/
+        }
         //maxPotential/=(field.getWidth()+field.getHeight());
        
     }
@@ -330,7 +317,7 @@ public class FieldSimulation {
     }
     public synchronized List<Vector2D> getPotentionalLine( Vector2D position ) {
 
-        if(field.getParticles().size()==0) return new LinkedList<>();
+        if(field.noObjects()) return new LinkedList<>();
     
         /*
          * General Idea of this algorithm
@@ -541,6 +528,24 @@ public class FieldSimulation {
             }
         }
     }
+
+    void renderPlanes(){
+        for (Plane p: field.getPlanes()){
+            double r=10;
+            if(!p.isNegative()) ctx.setStroke(Color.RED);
+            else ctx.setStroke(Color.BLUE);
+            ctx.setLineWidth(5*k);
+
+            Vector2D start = p.getStartPoint()
+            .sub(p.getDirection().mul(p.getStartPoint().distance(Vector2D.fromCoords(-field.getWidth()/2, -field.getHeight()/2))));
+            Vector2D end = p.getEndPoint()
+            .add(p.getDirection().mul(p.getEndPoint().distance(Vector2D.fromCoords(-field.getWidth()/2, -field.getHeight()/2))));
+            Vector2D lineStartCoords = convertFieldCoordsToScreen(start);
+            Vector2D lineEndCoords = convertFieldCoordsToScreen(end);
+            ctx.strokeLine(lineStartCoords.getX(), lineStartCoords.getY(), lineEndCoords.getX(), lineEndCoords.getY());
+        }
+        ctx.setLineWidth(1);
+    }
     void renderParticles(){
         for (Particle p: field.getParticles()){
             double r=10;
@@ -560,35 +565,39 @@ public class FieldSimulation {
             
         }
     }
+    void renderPotential(){
+        if(maxPotential!=0){
+            for(int y=0;y<field.getHeight();y++){
+                for(int x=0;x<field.getWidth();x++){
+                    double p = potential[y][x];
+                    double d = p/maxPotential;
+                    if(d>=1)d=1;
+                    if(d<0.25)d*=1;
+                    //System.out.println(d);
+                    Color c = Color.rgb((int)(d*255), 0, 0);
+                    ctx.setFill(c);
+                    //System.out.print(d);
+                    Vector2D renderCoords = convertFieldCoordsToScreen(Vector2D.fromCoords(x-field.getWidth()/2, y-field.getHeight()/2));
+                    ctx.fillRect(renderCoords.getX(), renderCoords.getY(), canvas.getWidth()/field.getWidth(),canvas.getHeight()/field.getHeight());
+                }
+            }
+        }
+        
+    }
     public void render(){
         k = Math.sqrt((canvas.getWidth()/firstWidth)*(canvas.getHeight()/firstHeight));
         Platform.runLater(()->{
-                        /*/
-            if(maxPotential!=0){
-                for(int y=0;y<field.getHeight();y++){
-                    for(int x=0;x<field.getWidth();x++){
-                        double p = potential[y][x];
-                        double d = p/maxPotential;
-                        if(d>=1)d=1;
-                        if(d<0.25)d*=4;
-                        //System.out.println(d);
-                        Color c = Color.rgb((int)(d*255), 0, 0);
-                        ctx.setFill(c);
-                        //System.out.print(d);
-                        Vector2D renderCoords = convertFieldCoordsToScreen(Vector2D.fromCoords(x-field.getWidth()/2, y-field.getHeight()/2));
-                        ctx.fillRect(renderCoords.getX(), renderCoords.getY(), canvas.getWidth()/field.getWidth(),canvas.getHeight()/field.getHeight());
-                    }
-                }
-            }
-            */
-            //line = getPrunedLine(line);
+                        
             clearScreen();
+            //renderPotential();
+          
             renderAxis();
             if(showField) renderField();
             if(showLines) renderLines();
 
-            
+            renderPlanes();
             renderParticles();
+            
             
         });
 

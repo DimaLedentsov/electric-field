@@ -18,6 +18,8 @@ public class Field2D {
     private List<Particle> particles;
 
     private List<PotentialLine> lines;
+
+    private List<Plane> planes;
     double t = 0;
 
 
@@ -31,8 +33,8 @@ public class Field2D {
         Random rand = new Random();
         particles = new LinkedList<>();
         
-        lines = new LinkedList<PotentialLine>();
-        lines = Collections.synchronizedList(lines);
+        lines = Collections.synchronizedList(new LinkedList<PotentialLine>());
+        planes = Collections.synchronizedList(new LinkedList<Plane>());
         for(int y=0; y<h; y++){
             for(int x=0; x<w; x++){
                 set(x, y, Vector2D.nullVector());
@@ -76,11 +78,16 @@ public class Field2D {
         return lines;
     }
 
+    public List<Plane> getPlanes(){
+        return planes;
+    }
+
     public boolean containsPoint(Vector2D point){
         return(Math.abs(point.getX())<=getWidth()/2 && Math.abs(point.getY())<=getHeight()/2);
     }
 
-    public void update(){
-
+    public boolean noObjects(){
+        return planes.size()==0&&particles.size()==0;
     }
+
 }

@@ -2,7 +2,8 @@ package project.view.controllers;
 
 public enum ItemType {
     PARTICLE("частица"),
-    POTENTIONAL_LINE("эквипотенциальная линия");
+    POTENTIONAL_LINE("эквипотенциальная линия"),
+    PLANE("плоскость");
     private String label;
 
     ItemType(String label) {
