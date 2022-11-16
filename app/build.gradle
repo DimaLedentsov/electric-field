@@ -15,7 +15,6 @@ plugins {
  //   id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.15'
 }
 
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)

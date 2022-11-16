@@ -77,8 +77,12 @@ public class AppController {
     @FXML
     private HBox planeSettings;
 
+    @FXML
+    private CheckBox planeSign;
+
     Field2D field;
     FieldSimulation simulation;
+    Vector2D lastClick;
     void updateSettings(){
         if(!(choiceBox.getSelectionModel().getSelectedItem()==ItemType.PARTICLE)){
             chargeSettings.setVisible(false);
@@ -110,7 +114,9 @@ public class AppController {
         field = new Field2D(40, 40);
         simulation = new FieldSimulation(field, canvas);
 
-        field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.0006,false));
+        //field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.0006,false));
+        //field.getPlanes().add(new Plane(Vector2D.fromCoords(-40, -10),Vector2D.fromCoords(-20, 10),0.0006,true));
+        //field.getParticles().add(new Particle(Vector2D.fromCoords(10.1, 10), 0.0001));
         simulation.updateField();
         AnimTask task = new AnimTask(()->{
             simulation.update();
@@ -188,7 +194,9 @@ public class AppController {
 
     @FXML
     void removePlane(ActionEvent event) {
-
+        field.getPlanes().clear();
+        simulation.updateField();
+        field.getLines().clear();
     }
     @FXML
     void changeSign(ActionEvent event) {
@@ -222,16 +230,18 @@ public class AppController {
             Vector2D coords = simulation.convertScreenCoordsToField(Vector2D.fromCoords(e.getX(), e.getY()));
 
             double Q=1;
+            double density = 0.1;
             if (e.getButton()==MouseButton.PRIMARY) {
                 if(choiceBox.getSelectionModel().getSelectedItem()==ItemType.PARTICLE){
-                    if(inputText.getText()==null || inputText.getText().equals("")) Q=1;
-                    else{
+                    //if(inputText.getText()==null || inputText.getText().equals("")) Q=1;
+                    //else{
                         try{
                             Q = Double.parseDouble(inputText.getText());
                         } catch(NumberFormatException ex){
                             error("неправильно введен заряд");
+                            return;
                         }
-                    }
+                    //}
                     field.getParticles().add(new Particle(coords, Q));
                     simulation.updateField();
                     field.getLines().clear();
@@ -244,6 +254,25 @@ public class AppController {
                         simulation.setPotentionalLineColor(colorPicker.getValue());
                     });
                     
+                } else if (choiceBox.getSelectionModel().getSelectedItem()==ItemType.PLANE){
+                    if(lastClick ==null){
+                        lastClick = coords;
+                    } else{
+                        //if(chargeDensity.getText()==null || chargeDensity.getText().equals("")) density=0.01;
+                        //else{
+                            try{
+                                density = Double.parseDouble(chargeDensity.getText());
+                                if(density<0) throw new NumberFormatException();
+                            } catch(NumberFormatException ex){
+                                error("неправильно задана поверхностная плотность");
+                                return;
+                            }
+                        //}
+                        field.getPlanes().add(new Plane(coords,lastClick,density,planeSign.isSelected()));
+                        simulation.updateField();
+                        field.getLines().clear();
+                        lastClick=null;
+                    }
                 }
                 
             }

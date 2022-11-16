@@ -36,11 +36,12 @@ public class FieldSimulation {
     private double firstWidth, firstHeight;
 
     
-    final int MAX_STEPS = 1000; //1000; максимальное колво точек в линии
-    final int MIN_STEPS = 10; //10 минимальное число точек. попробовать увеличить если "обрубки",
-    final double MIN_EPSILON_DISTANCE = 0.1; //0.1; минимальное расстояние на котором ищется след. точка, попробовать поуменьшать
+    final int MAX_STEPS = 2000; //1000; максимальное колво точек в линии
+    final int MIN_STEPS = 100; //10 минимальное число точек. попробовать увеличить если "обрубки",
+    final double MIN_EPSILON_DISTANCE = 0.02; //0.1; минимальное расстояние на котором ищется след. точка, попробовать поуменьшать
     final double MAX_EPSILON_DISTANCE = 0.5; //0.5; макс расстояние на котором ищется точка, попробовать увеличить
     final double K_CONSTANT = 9;
+    final double e0 = 8.854187*Math.pow(10, -12);//8.854187e-12;
 
     private boolean showField;
     private boolean showLines;
@@ -50,7 +51,7 @@ public class FieldSimulation {
     double k;
 
     double[][] potential;
-    double maxPotential;
+    volatile double maxPotential;
     public FieldSimulation(Field2D f, Canvas c){
         showField = true;
         showLines = true;
@@ -114,7 +115,7 @@ public class FieldSimulation {
     }
 
 
-    final double e0 = 8.854187e-12;
+    
     public Vector2D E(Vector2D pos){
         Vector2D Echarges = Vector2D.nullVector();
         for (Particle p: field.getParticles()){
@@ -179,11 +180,13 @@ public class FieldSimulation {
     public double potential(Vector2D pos){
         double F=0;
         for(Particle p: field.getParticles()){
-            F+=(p.getQ())/pos.sub(p.getPos()).len();
+            //F+=(p.getQ())/pos.sub(p.getPos()).len();
+            F+= (p.getQ())/(pos.distance(p.getPos()) *4*Math.PI*e0);
         }
 
         for(Plane p: field.getPlanes()){
-            F+=(p.getDensity()/(2*e0))*p.sideOfPoint(pos)*p.distanceToPoint(pos);
+            //(-1)*E(pos).len()*p.distanceToPoint(pos)*p.sideOfPoint(pos);
+            F+= (p.getDensity()/(2*e0))*p.distanceToPoint(pos);
         }
         return F;
     }
@@ -257,8 +260,6 @@ public class FieldSimulation {
                 //System.out.println(vec.toString());
             }
         }
-    }
-    public void update(){
         maxPotential=0;
         for(int y=0;y<field.getHeight();y++){
             for(int x=0;x<field.getWidth();x++){
@@ -268,6 +269,10 @@ public class FieldSimulation {
 
             }
         }
+
+    }
+    public void update(){
+        
         //maxPotential/=(field.getWidth()+field.getHeight());
        
     }
@@ -572,7 +577,7 @@ public class FieldSimulation {
                     double p = potential[y][x];
                     double d = p/maxPotential;
                     if(d>=1)d=1;
-                    if(d<0.25)d*=1;
+                    //if(d<0.25)d*=1;
                     //System.out.println(d);
                     Color c = Color.rgb((int)(d*255), 0, 0);
                     ctx.setFill(c);
@@ -582,24 +587,24 @@ public class FieldSimulation {
                 }
             }
         }
+        System.out.println(maxPotential);
         
     }
     public void render(){
         k = Math.sqrt((canvas.getWidth()/firstWidth)*(canvas.getHeight()/firstHeight));
-        Platform.runLater(()->{
-                        
-            clearScreen();
-            //renderPotential();
-          
-            renderAxis();
-            if(showField) renderField();
-            if(showLines) renderLines();
-
-            renderPlanes();
-            renderParticles();
+    
+                    
+        clearScreen();
+        //renderPotential();
+        
+        renderAxis();
+        if(showField) renderField();
+        if(showLines) renderLines();
+        renderPlanes();
+        renderParticles();
             
             
-        });
+    
 
         
     }

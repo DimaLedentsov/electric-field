@@ -70,12 +70,13 @@
                   <HBox fx:id="planeSettings">
                      <children>
                         <Button mnemonicParsing="false" onAction="#removePlane" text="удалить" />
-                        <Label alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="181.0" text="Поверхностная плотность:" />
-                        <TextField fx:id="chargeDensity" prefHeight="26.0" prefWidth="84.0">
+                        <Label alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="162.0" text="пов. плотность:" />
+                        <TextField fx:id="chargeDensity" prefHeight="26.0" prefWidth="84.0" text="0.001">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin>
                         </TextField>
+                        <CheckBox fx:id="planeSign" alignment="BOTTOM_LEFT" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="60.0" text="+/-" />
                      </children>
                   </HBox>
                </children>
