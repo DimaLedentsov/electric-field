@@ -52,6 +52,7 @@ public class FieldSimulation {
 
     double[][] potential;
     volatile double maxPotential;
+    volatile double maxE, minE;
     public FieldSimulation(Field2D f, Canvas c){
         showField = true;
         showLines = true;
@@ -89,11 +90,14 @@ public class FieldSimulation {
         
     }
 
-    public void drawArrow(Vector2D coords, double length, double angle){
+    public void drawArrow(Vector2D coords, double length, double angle, double d){
         
         // Draw a Text
-        
-        ctx.setFill(Color.BLUE);
+        //if(d>0.005) d*=40;
+        if(d>=0.999999) d=1;
+        else if(d>0.9) d=0.9;
+        d = Math.pow(d,15);
+        ctx.setFill(Color.rgb(0, 0, 255,d));
         double x = coords.getX();
         double y = coords.getY();
     
@@ -251,11 +255,15 @@ public class FieldSimulation {
     /*TODO: select point for line, show values */
 
     public void updateField(){
+        maxE=0;
+        minE = 9999999;
         for(int y=0; y<field.getGridHeight(); y++){
             for(int x=0; x<field.getGridWidth(); x++){
                 Vector2D pos = convertGridCoordsToField(x, y);
     
                 Vector2D vec = E(pos);//Vector2D.fromAngle(Math.toRadians(Math.random() * 360), 0.1);
+                maxE = Math.max(maxE, vec.len());
+                minE = Math.min(minE, vec.len());
                 field.set(x, y, vec);
                 //System.out.println(vec.toString());
             }
@@ -522,12 +530,15 @@ public class FieldSimulation {
             }
         }
     }
+    double norm(double x, double MIN){
+        return 1- Math.exp(1-(x/MIN));
+    }
     void renderField(){
         for(int y=0; y<field.getGridHeight(); y++){
             for(int x=0; x<field.getGridWidth(); x++){
                 Vector2D vec = field.get(x, y);
                 Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
-                drawArrow(renderCoords, 10, vec.getAngle());
+                drawArrow(renderCoords, 10, vec.getAngle(), norm(vec.len(), minE)); //TODO: цвет блять
                 //ctx.setFill(Color.RED);
                 //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
             }
