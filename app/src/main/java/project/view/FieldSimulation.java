@@ -97,6 +97,7 @@ public class FieldSimulation {
         if(d>=0.999999) d=1;
         else if(d>0.9) d=0.9;
         d = Math.pow(d,15);
+        if(d<0.07) d=0.07;
         ctx.setFill(Color.rgb(0, 0, 255,d));
         double x = coords.getX();
         double y = coords.getY();
