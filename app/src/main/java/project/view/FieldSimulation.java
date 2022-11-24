@@ -126,21 +126,21 @@ public class FieldSimulation {
     public Vector2D convertFieldCoordsToScreen(Vector2D mapCoords){
         return Vector2D.fromCoords(
             (mapCoords.getX()+field.getWidth()/2)/field.getWidth()*canvas.getWidth(), 
-            (mapCoords.getY()*(-1)+field.getHeight()/2)/field.getHeight()*canvas.getHeight()
+            (mapCoords.getY()+field.getHeight()/2)/field.getHeight()*canvas.getHeight()
         );
     }
 
     public Vector2D convertScreenCoordsToField(Vector2D screenCoords){
         return Vector2D.fromCoords(
             screenCoords.getX()/canvas.getWidth()*field.getWidth()-field.getWidth()/2, 
-            (screenCoords.getY()/canvas.getHeight()*field.getHeight()-field.getHeight()/2)*(-1)
+            (screenCoords.getY()/canvas.getHeight()*field.getHeight()-field.getHeight()/2)
         );
     }
 
     Vector2D convertGridCoordsToField(int x, int y){
         return Vector2D.fromCoords(
             (x-Math.round(field.getGridWidth()/2))*field.getWidth()/field.getGridWidth(),
-            (y-Math.round(field.getGridHeight()/2))*field.getHeight()/field.getGridHeight()*(-1)
+            (y-Math.round(field.getGridHeight()/2))*field.getHeight()/field.getGridHeight()
         );
         
     }
