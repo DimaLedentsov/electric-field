@@ -196,7 +196,7 @@ public class FieldSimulation {
     
         ctx.setFill(gradientColor(d, 0, 1));*/
     
-        if(d>=0.999999) d=1;
+        /*if(d>=0.999999) d=1;
         d*=120;
         if(d > 1) d = 1;
         if(d < 0.4) d = 0.4;
@@ -204,7 +204,23 @@ public class FieldSimulation {
         int red = (int) (d*255);
         int green = 0;
         int blue = 255;
-        ctx.setFill(Color.rgb(red, green, blue));
+        ctx.setFill(Color.rgb(red, green, blue));*/
+
+  
+        if(d>=0.999999) d=1;
+        d*=120;
+        if(d > 1) d = 1;
+        if(d < 0.2&&d!=0){
+            d = 0.07;
+        }
+
+        int red = (int) (d*255);
+        int green = 0;
+        int blue = 255;
+        ctx.setFill(Color.rgb(red, green, blue, d));
+
+
+
 
         double x = coords.getX();
         double y = coords.getY();
@@ -645,18 +661,24 @@ public class FieldSimulation {
     /*double norm(double x, double MIN){
         return 1- Math.exp(1-(x/MIN));
     }*/
-    double norm(double x, double MIN){
+    /*double norm(double x, double MIN){
         if(maxE - minE > 1.3237740653617786E10){
             return (x - MIN)/(1.3237740653617786E10);
         }
         return (x - MIN)/(maxE - MIN);
+    }*/
+    double norm(double x, double MAX){
+        if(maxE > 2.3237740653617786E10){
+            return (x/(2.3237740653617786E10));
+        }
+        return x/MAX;
     }
     void renderField(){
         for(int y=0; y<field.getGridHeight(); y++){
             for(int x=0; x<field.getGridWidth(); x++){
                 Vector2D vec = field.get(x, y);
                 Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
-                drawArrow(renderCoords, 10, vec.getAngle(), norm(vec.len(), minE)); //TODO: цвет блять
+                drawArrow(renderCoords, 10, vec.getAngle(), norm(vec.len(), maxE)); //TODO: цвет блять
                 //ctx.setFill(Color.RED);
                 //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
             }
