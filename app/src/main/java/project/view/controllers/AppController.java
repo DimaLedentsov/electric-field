@@ -242,7 +242,14 @@ public class AppController {
                             return;
                         }
                     //}
-                    field.getParticles().add(new Particle(coords, Q));
+                    Vector2D nearest = simulation.convertScreenCoordsToFieldAndFindNearestGridPoint(Vector2D.fromCoords(e.getX(), e.getY()));
+                    Particle particle = new Particle(nearest, Q);
+
+                    if(field.getParticles().stream().filter((p)->p.getPos().equals(particle.getPos())).count()==0) {
+                        field.getParticles().add(particle);
+                        System.out.println(particle);
+                    }
+                    //System.out.println(p);
                     simulation.updateField();
                     field.getLines().clear();
                 }

@@ -1,6 +1,7 @@
 package project.logic;
 
 import java.lang.Math;
+import java.util.Objects;
 public class Vector2D {
     private double x;
     private double y;
@@ -113,5 +114,23 @@ public class Vector2D {
             ", y='" + getY() + "'" +
             "}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Vector2D)) {
+            return false;
+        }
+        Vector2D vector2D = (Vector2D) o;
+        return x == vector2D.x && y == vector2D.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+
     
 }

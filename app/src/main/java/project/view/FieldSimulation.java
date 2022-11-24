@@ -89,16 +89,68 @@ public class FieldSimulation {
         );
         
     }
+    public Vector2D roundCoords(Vector2D c){
+        return Vector2D.fromCoords(
+            Math.round(c.getX()*1000)/1000,
+            Math.round(c.getY()*1000)/1000
+        );
+    }
+    public Vector2D convertScreenCoordsToFieldAndFindNearestGridPoint(Vector2D c){
+        Vector2D nearest = Vector2D.fromCoords(
+            //((int)(c.getX()/field.getGridWidth()))*field.getGridWidth(),
+            //((int)(c.getY()/field.getGridHeight()))*field.getGridHeight()
+            c.getX()-c.getX()%(field.getGridWidth()/2),
+           
+            c.getY()-c.getY()%(field.getGridHeight()/2)
+        );
+        return convertScreenCoordsToField(nearest);
+    }
+    public Vector2D findNearestGridPoint(Vector2D c){
+        System.out.println(c.getX()%(field.getGridWidth()/2));
+        return Vector2D.fromCoords(
+            //((int)(c.getX()/field.getGridWidth()))*field.getGridWidth(),
+            //((int)(c.getY()/field.getGridHeight()))*field.getGridHeight()
+            c.getX()-c.getX()%(field.getGridWidth()/2),
+           
+            c.getY()-c.getY()%(field.getGridHeight()/2)
+        );
+        
+    }
 
+    Color gradientColor(double x, double minX, double maxX) {
+        double range = maxX - minX;
+        double p = (x - minX) / range;
+        Color from = Color.RED;
+        Color to = Color.BLUE;
+
+       return new Color(
+            from.getRed() * p + to.getRed() * (1 - p),
+            from.getGreen() * p + to.getGreen() * (1 - p),
+            from.getBlue() * p + to.getBlue() * (1 - p),
+            1.0
+        );
+    }
     public void drawArrow(Vector2D coords, double length, double angle, double d){
         
         // Draw a Text
         //if(d>0.005) d*=40;
-        if(d>=0.999999) d=1;
+        /*if(d>=0.99999999) d=1;
         else if(d>0.9) d=0.9;
         d = Math.pow(d,15);
         if(d<0.07) d=0.07;
-        ctx.setFill(Color.rgb(0, 0, 255,d));
+    
+        ctx.setFill(gradientColor(d, 0, 1));*/
+    
+        if(d>=0.999999) d=1;
+        d*=120;
+        if(d > 1) d = 1;
+        if(d < 0.4) d = 0.4;
+
+        int red = (int) (d*255);
+        int green = 0;
+        int blue = 255;
+        ctx.setFill(Color.rgb(red, green, blue));
+
         double x = coords.getX();
         double y = coords.getY();
     
@@ -531,8 +583,14 @@ public class FieldSimulation {
             }
         }
     }
-    double norm(double x, double MIN){
+    /*double norm(double x, double MIN){
         return 1- Math.exp(1-(x/MIN));
+    }*/
+    double norm(double x, double MIN){
+        if(maxE - minE > 1.3237740653617786E10){
+            return (x - MIN)/(1.3237740653617786E10);
+        }
+        return (x - MIN)/(maxE - MIN);
     }
     void renderField(){
         for(int y=0; y<field.getGridHeight(); y++){
