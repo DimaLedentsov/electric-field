@@ -11,12 +11,14 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.view.controllers.AppController">
    <children>
@@ -24,6 +26,25 @@
         <items>
             <MenuButton fx:id="menu" mnemonicParsing="false" onAction="#menuSelect" text="функции">
               <items>
+                  <Menu disable="true" mnemonicParsing="false" text="интерпретатор">
+                     <items>
+                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
+                           <content>
+                              <TextArea prefHeight="200.0" prefWidth="200.0" />
+                           </content>
+                        </CustomMenuItem>
+                        <CustomMenuItem disable="true" hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
+                           <content>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                           </content>
+                        </CustomMenuItem>
+                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
+                           <content>
+                              <Button mnemonicParsing="false" text="выполнить" />
+                           </content>
+                        </CustomMenuItem>
+                     </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="настройки">
                     <items>
                         <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">

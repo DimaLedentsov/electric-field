@@ -194,6 +194,7 @@ public class AppController {
 
     @FXML
     void removePlane(ActionEvent event) {
+        lastClick=null;
         field.getPlanes().clear();
         simulation.updateField();
         field.getLines().clear();
@@ -247,7 +248,6 @@ public class AppController {
 
                     if(field.getParticles().stream().filter((p)->p.getPos().equals(particle.getPos())).count()==0) {
                         field.getParticles().add(particle);
-                        System.out.println(particle);
                     }
                     //System.out.println(p);
                     simulation.updateField();
@@ -275,6 +275,7 @@ public class AppController {
                                 return;
                             }
                         //}
+                        
                         field.getPlanes().add(new Plane(coords,lastClick,density,planeSign.isSelected()));
                         simulation.updateField();
                         field.getLines().clear();

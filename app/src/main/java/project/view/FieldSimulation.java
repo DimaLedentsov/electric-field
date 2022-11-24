@@ -196,12 +196,16 @@ public class FieldSimulation {
             Vector2D E_direction = Vector2D.nullVector();
             if(side>0){
             
-                E_direction = p.getDirection()
-                    .rotate(p.isNegative()? Math.PI/2: Math.PI*1.5);
+                /*E_direction = p.getDirection()
+                    .rotate(p.isNegative()? Math.PI/2: -Math.PI/2);*/
+                if(p.isNegative()) E_direction = p.getDirection().rotate(Math.PI/2);
+                else E_direction = p.getDirection().rotate(Math.PI/2).neg();
             }else if (side<0){
-                E_direction = p.getDirection().neg()
-                    .rotate(p.isNegative()? Math.PI/2: Math.PI*1.5);
+                if(p.isNegative()) E_direction = p.getDirection().neg().rotate(Math.PI/2);
+                else E_direction = p.getDirection().neg().rotate(Math.PI/2).neg();
+    
             }
+            System.out.println(E_direction);
             double E_module = p.getDensity()/(2*e0);
            //if(p.getQ()<0) return Vector2D.nullVector();
             Vector2D E = E_direction.mul(E_module);
@@ -243,7 +247,7 @@ public class FieldSimulation {
 
         for(Plane p: field.getPlanes()){
             //(-1)*E(pos).len()*p.distanceToPoint(pos)*p.sideOfPoint(pos);
-            F+= (p.getDensity()/(2*e0))*p.distanceToPoint(pos);
+            F+= (p.getDensity()/(2*e0))*p.distanceToPoint(pos)*(p.isNegative()? 1:-1);
         }
         return F;
     }
