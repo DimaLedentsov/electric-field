@@ -15,7 +15,7 @@ public class Parser {
     public void execute(String code) throws ParseException{
         //List<Object<?>> objects = new LinkedList<>();
         for(String line: code.split("\n")){
-            String pair[] = line.split(":",2);
+            String pair[] = line.trim().split(" ",2);
             if (pair.length!=2) throw new ParseException("неправильно задан объект, формат тип:данные");
             String typeKey = pair[0].trim();
             String data = pair[1].trim();

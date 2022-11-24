@@ -10,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.CustomMenuItem;
@@ -18,6 +19,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -89,6 +91,12 @@ public class AppController {
     
     @FXML
     private Text scriptOutput;
+    @FXML
+    private TitledPane interpreterPane;
+
+    
+    @FXML
+    private CheckMenuItem showInterpreter;
 
     Field2D field;
     FieldSimulation simulation;
@@ -116,6 +124,8 @@ public class AppController {
             planeSettings.setVisible(true);
             planeSettings.setManaged(true);
         }
+
+        
     }
     @FXML
     void initialize(){
@@ -140,6 +150,7 @@ public class AppController {
         choiceBox.getItems().addAll(ItemType.values());
         choiceBox.getSelectionModel().select(ItemType.PARTICLE);
         updateSettings();
+        updateInterpreter();
         choiceBox.setOnAction((e)->{
             updateSettings();
         });
@@ -358,6 +369,16 @@ public class AppController {
             //scriptOutput.setStyle("-fx-text-inner-color: red;");
             System.out.println(e.getMessage());
         }
+    }
+
+    void updateInterpreter(){
+        boolean flag = showInterpreter.isSelected();
+        interpreterPane.setVisible(flag);
+        interpreterPane.setManaged(flag);
+    }
+    @FXML
+    void showHideInterpreter(ActionEvent event) {
+        updateInterpreter();
     }
 
 }
