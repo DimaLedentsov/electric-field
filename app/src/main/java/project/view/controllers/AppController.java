@@ -16,17 +16,21 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionModel;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import project.logic.Field2D;
 import project.logic.Particle;
 import project.logic.Plane;
 import project.logic.PotentialLine;
 import project.logic.Vector2D;
+import project.script.ParseException;
 import project.utils.AnimTask;
 import project.view.FieldSimulation;
 
@@ -80,6 +84,12 @@ public class AppController {
     @FXML
     private CheckBox planeSign;
 
+    @FXML
+    private TextArea script;
+    
+    @FXML
+    private Text scriptOutput;
+
     Field2D field;
     FieldSimulation simulation;
     Vector2D lastClick;
@@ -114,8 +124,8 @@ public class AppController {
         field = new Field2D(40, 40);
         simulation = new FieldSimulation(field, canvas);
 
-        //field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.0006,false));
-        //field.getPlanes().add(new Plane(Vector2D.fromCoords(-40, -10),Vector2D.fromCoords(-20, 10),0.0006,true));
+        field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.001,false));
+        field.getPlanes().add(new Plane(Vector2D.fromCoords(-40, -10),Vector2D.fromCoords(-20, 10),0.001,true));
         //field.getParticles().add(new Particle(Vector2D.fromCoords(10.1, 10), 0.0001));
         simulation.updateField();
         AnimTask task = new AnimTask(()->{
@@ -329,6 +339,25 @@ public class AppController {
                 "Леденцов Дмитрий\n" + 
                 "Аталян Александр"
         );
+    }
+
+    @FXML
+    void evalScript(ActionEvent event) {
+        String text = script.getText();
+        //System.out.println(text);
+        try{
+            simulation.getParser().execute(text);
+            field.getLines().clear();
+            simulation.updateField();
+            scriptOutput.setText("скрипт выполнен!");
+            scriptOutput.setFill(Color.GREEN);
+            //scriptOutput.setStyle("-fx-text-inner-color: green;");
+        } catch (ParseException e){
+            scriptOutput.setText(e.getMessage());
+            scriptOutput.setFill(Color.RED);
+            //scriptOutput.setStyle("-fx-text-inner-color: red;");
+            System.out.println(e.getMessage());
+        }
     }
 
 }

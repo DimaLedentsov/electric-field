@@ -13,12 +13,15 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.view.controllers.AppController">
    <children>
@@ -26,23 +29,11 @@
         <items>
             <MenuButton fx:id="menu" mnemonicParsing="false" onAction="#menuSelect" text="функции">
               <items>
-                  <Menu disable="true" mnemonicParsing="false" text="интерпретатор">
+                  <Menu mnemonicParsing="false" text="интерпретатор">
                      <items>
-                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
-                           <content>
-                              <TextArea prefHeight="200.0" prefWidth="200.0" />
-                           </content>
-                        </CustomMenuItem>
-                        <CustomMenuItem disable="true" hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
-                           <content>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                           </content>
-                        </CustomMenuItem>
-                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
-                           <content>
-                              <Button mnemonicParsing="false" text="выполнить" />
-                           </content>
-                        </CustomMenuItem>
+                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action" />
+                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action" />
+                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="настройки">
@@ -107,6 +98,33 @@
       <AnchorPane fx:id="canvasPane" layoutY="38.400001525878906" AnchorPane.bottomAnchor="-1.5258789289873675E-6" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="38.400001525878906">
          <children>
             <Canvas fx:id="canvas" height="352.0" layoutY="9.0" onMouseClicked="#canvasClick" width="600.0" />
+            <TitledPane animated="false" expanded="false" layoutX="398.0" layoutY="58.0" text="интерпретатор" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="9.600000381469727" layoutY="9.600000381469727" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TextArea fx:id="script" prefHeight="94.0" prefWidth="182.0">
+                                 <font>
+                                    <Font name="Consolas Bold" size="12.0" />
+                                 </font>
+                              </TextArea>
+                              <TextFlow>
+                                 <children>
+                                    <Text fx:id="scriptOutput" strokeType="OUTSIDE" strokeWidth="0.0" text="вывод">
+                                       <font>
+                                          <Font name="Consolas" size="12.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </TextFlow>
+                              <Button mnemonicParsing="false" onAction="#evalScript" text="выполнить" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
          </children>
       </AnchorPane>
    </children>

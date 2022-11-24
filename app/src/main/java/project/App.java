@@ -1,6 +1,7 @@
 package project;
 import java.io.IOError;
 import java.io.IOException;
+import java.util.Locale;
 
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
@@ -31,6 +32,7 @@ public class App extends Application
 {
     public static void main(String[] args) 
     {
+        Locale.setDefault(Locale.getDefault());
         Application.launch(args);
     }
      

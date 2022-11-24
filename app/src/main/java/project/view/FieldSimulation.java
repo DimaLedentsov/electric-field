@@ -8,8 +8,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import project.script.*;
 
 import com.google.common.collect.Lists;
 
@@ -48,6 +52,7 @@ public class FieldSimulation {
     
     private Particle selectedParticle;
     private Color lineColor;
+    private Parser parser;
     double k;
 
     double[][] potential;
@@ -63,6 +68,24 @@ public class FieldSimulation {
         firstHeight=c.getHeight();
         potential = new double[(int)f.getHeight()][(int)f.getWidth()];
         lineColor = Color.PURPLE;
+
+        configureParser();
+    }
+
+    public void configureParser(){
+        Map<String,Callback> types = new HashMap<>();
+        types.put("заряд", (args)->{
+            if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
+            String[] coords = args.get("координаты");
+            double x = Double.parseDouble(coords[0]);
+            double y = Double.parseDouble(coords[1]);
+            double Q =1;
+            if(args.containsKey("величина")&& args.get("величина").length>=1){
+                Q = Double.parseDouble(args.get("величина")[0]);
+            }
+            field.getParticles().add(new Particle(Vector2D.fromCoords(x, y), Q));
+        });
+        parser = new Parser(types);
     }
 
     public void setPotentionalLineColor(Color c){
@@ -106,7 +129,7 @@ public class FieldSimulation {
         return convertScreenCoordsToField(nearest);
     }
     public Vector2D findNearestGridPoint(Vector2D c){
-        System.out.println(c.getX()%(field.getGridWidth()/2));
+        //System.out.println(c.getX()%(field.getGridWidth()/2));
         return Vector2D.fromCoords(
             //((int)(c.getX()/field.getGridWidth()))*field.getGridWidth(),
             //((int)(c.getY()/field.getGridHeight()))*field.getGridHeight()
@@ -205,7 +228,7 @@ public class FieldSimulation {
                 else E_direction = p.getDirection().neg().rotate(Math.PI/2).neg();
     
             }
-            System.out.println(E_direction);
+            //System.out.println(E_direction);
             double E_module = p.getDensity()/(2*e0);
            //if(p.getQ()<0) return Vector2D.nullVector();
             Vector2D E = E_direction.mul(E_module);
@@ -695,6 +718,10 @@ public class FieldSimulation {
     }
     public void setShowLines(boolean f){
         showLines = f;
+    }
+
+    public Parser getParser(){
+        return parser;
     }
 
 }
