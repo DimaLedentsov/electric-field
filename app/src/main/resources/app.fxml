@@ -46,6 +46,7 @@
                     </items>
                   </Menu>
                 <MenuItem fx:id="clearButton" mnemonicParsing="false" onAction="#clearAll" text="очистить все" />
+                  <MenuItem mnemonicParsing="false" onAction="#showHelp" text="справка" />
                 <MenuItem mnemonicParsing="false" onAction="#about" text="о нас" />
               </items>
             </MenuButton>
@@ -93,7 +94,7 @@
       <AnchorPane fx:id="canvasPane" layoutY="38.400001525878906" AnchorPane.bottomAnchor="-1.5258789289873675E-6" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="38.400001525878906">
          <children>
             <Canvas fx:id="canvas" height="352.0" layoutY="9.0" onMouseClicked="#canvasClick" width="600.0" />
-            <TitledPane fx:id="interpreterPane" collapsible="false" layoutX="398.0" layoutY="58.0" prefHeight="261.0" prefWidth="282.0" text="интерпретатор" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <TitledPane fx:id="interpreterPane" collapsible="false" layoutX="398.0" layoutY="58.0" prefHeight="282.0" prefWidth="281.0" text="интерпретатор" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="5.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="283.0">
                      <children>
@@ -101,7 +102,7 @@
                            <children>
                               <TextFlow prefWidth="263.0">
                                  <children>
-                                    <TextArea fx:id="script" prefHeight="130.0" prefWidth="251.0" wrapText="true">
+                                    <TextArea fx:id="script" prefHeight="130.0" prefWidth="257.0" wrapText="true">
                                        <font>
                                           <Font name="Consolas Bold" size="12.0" />
                                        </font>
@@ -122,7 +123,7 @@
                               </TextFlow>
                               <Button mnemonicParsing="false" onAction="#evalScript" text="выполнить">
                                  <VBox.margin>
-                                    <Insets top="5.0" />
+                                    <Insets top="10.0" />
                                  </VBox.margin>
                               </Button>
                            </children>
@@ -130,6 +131,14 @@
                      </children>
                   </AnchorPane>
               </content>
+               <graphic>
+                  <MenuButton mnemonicParsing="false" text="файл">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#saveScriptAs" text="сохранить как" />
+                      <MenuItem mnemonicParsing="false" onAction="#loadScript" text="загрузить" />
+                    </items>
+                  </MenuButton>
+               </graphic>
             </TitledPane>
          </children>
       </AnchorPane>

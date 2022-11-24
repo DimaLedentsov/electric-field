@@ -1,11 +1,17 @@
 package project.view.controllers;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -25,8 +31,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import project.logic.Field2D;
 import project.logic.Particle;
 import project.logic.Plane;
@@ -381,5 +391,62 @@ public class AppController {
     void showHideInterpreter(ActionEvent event) {
         updateInterpreter();
     }
+
+    @FXML
+    void saveScriptAs(ActionEvent event) {
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files (*.txt)", "*.txt"));
+
+        String currentPath = Paths.get("..").toAbsolutePath().normalize().toString();
+        fileChooser.setInitialDirectory(new File(currentPath)); 
+        File file = fileChooser.showSaveDialog(null);
+    
+        try {
+            file.renameTo(new File(file.getName()+".txt"));
+            FileWriter fileWriter = new FileWriter(file);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.print(script.getText());
+            printWriter.close();
+            fileWriter.close();
+        } catch (IOException|IllegalArgumentException e) {
+            error("невозможно сохранить");
+        }
+    }
+    @FXML
+    void loadScript(ActionEvent event) {
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files (*.txt)", "*.txt"));
+
+        String currentPath = Paths.get("..").toAbsolutePath().normalize().toString();
+        fileChooser.setInitialDirectory(new File(currentPath)); 
+        
+        File file = fileChooser.showOpenDialog(null);
+
+        try (Scanner scanner = new Scanner(file)) {
+
+            while (scanner.hasNext()) script.setText(script.getText() + scanner.nextLine()+"\n");
+    
+        } catch (IOException|IllegalArgumentException e) {
+            error("невозможно открыть");
+        }
+    }
+
+    
+    @FXML
+    void showHelp(ActionEvent event) {
+        Stage stage = new Stage();
+        stage.setTitle("справка");
+
+        WebView webView = new WebView();
+
+        webView.getEngine().load("https://docs.google.com/presentation/d/e/2PACX-1vQz1Kvk9mDpbjI4s4MXdzLOdrOYUmiu7iCkUTIScHEzMgypiKQJE75KLcvRy8HZ5vPh2berMMlCbFcB/pub?start=false&loop=false&delayms=3000");
+
+        VBox vBox = new VBox(webView);
+        Scene scene = new Scene(vBox, 960, 600);
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
 }

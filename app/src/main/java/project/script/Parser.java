@@ -28,7 +28,9 @@ public class Parser {
             for(String arg: args){
                 String argPair[] = arg.trim().split(" ",2);
                 
+                if(argPair.length==1) throw new ParseException("неправильно задан параметр " + argPair[0]);
                 if (argPair.length!=2) throw new ParseException("неправильно задан параметр");
+
                 String argKey = argPair[0].trim();
                 String argData = argPair[1].trim();
                 String argDataArray[] = argData.split(" ");
