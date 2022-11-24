@@ -24,6 +24,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Line;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import project.logic.Field2D;
@@ -85,6 +86,32 @@ public class FieldSimulation {
             }
             field.getParticles().add(new Particle(Vector2D.fromCoords(x, y), Q));
         });
+
+        types.put("плоскость", (args)->{
+            if(!args.containsKey("координаты") || args.get("координаты").length!=4) throw new ParseException("не заданы координаты");
+            String[] coords = args.get("координаты");
+            double x1 = Double.parseDouble(coords[0]);
+            double y1 = Double.parseDouble(coords[1]);
+            double x2 = Double.parseDouble(coords[2]);
+            double y2 = Double.parseDouble(coords[3]);
+            double density =0.001;
+            boolean isNegative = false;
+            if(args.containsKey("плотность")&& args.get("плотность").length>=1){
+                density = Double.parseDouble(args.get("плотность")[0]);
+            }
+            if(args.containsKey("негатив")){ isNegative = true;}
+            field.getPlanes().add(new Plane(Vector2D.fromCoords(x1, y1), Vector2D.fromCoords(x2, y2), density, isNegative));
+        });
+
+        types.put("линия", (args)->{
+            if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
+            String[] coords = args.get("координаты");
+            double x = Double.parseDouble(coords[0]);
+            double y = Double.parseDouble(coords[1]);
+
+            addLine(Vector2D.fromCoords(x, y));
+        });
+
         parser = new Parser(types);
     }
 
@@ -92,6 +119,10 @@ public class FieldSimulation {
         lineColor = c;
     }
 
+    public void addLine(Vector2D coords){
+        List<Vector2D> line = getPrunedLine(getPotentionalLine(coords));
+        field.getLines().add(new PotentialLine(lineColor, coords,potential(coords), line));
+    }
     public Vector2D convertFieldCoordsToScreen(Vector2D mapCoords){
         return Vector2D.fromCoords(
             (mapCoords.getX()+field.getWidth()/2)/field.getWidth()*canvas.getWidth(), 

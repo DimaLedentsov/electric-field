@@ -116,8 +116,15 @@
                                        </font>
                                     </Text>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
                               </TextFlow>
-                              <Button mnemonicParsing="false" onAction="#evalScript" text="выполнить" />
+                              <Button mnemonicParsing="false" onAction="#evalScript" text="выполнить">
+                                 <VBox.margin>
+                                    <Insets top="5.0" />
+                                 </VBox.margin>
+                              </Button>
                            </children>
                         </VBox>
                      </children>

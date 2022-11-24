@@ -16,7 +16,7 @@ public class Parser {
         //List<Object<?>> objects = new LinkedList<>();
         for(String line: code.split("\n")){
             String pair[] = line.trim().split(" ",2);
-            if (pair.length!=2) throw new ParseException("неправильно задан объект, формат тип:данные");
+            if (pair.length!=2) throw new ParseException("неправильно задан объект, формат тип пробел данные");
             String typeKey = pair[0].trim();
             String data = pair[1].trim();
             
@@ -27,6 +27,7 @@ public class Parser {
             Map<String,String[]> argMap = new HashMap<>();
             for(String arg: args){
                 String argPair[] = arg.trim().split(" ",2);
+                
                 if (argPair.length!=2) throw new ParseException("неправильно задан параметр");
                 String argKey = argPair[0].trim();
                 String argData = argPair[1].trim();

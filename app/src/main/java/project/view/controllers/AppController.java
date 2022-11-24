@@ -357,9 +357,8 @@ public class AppController {
         String text = script.getText();
         //System.out.println(text);
         try{
-            simulation.getParser().execute(text);
             field.getLines().clear();
-            simulation.updateField();
+            simulation.getParser().execute(text);
             scriptOutput.setText("скрипт выполнен!");
             scriptOutput.setFill(Color.GREEN);
             //scriptOutput.setStyle("-fx-text-inner-color: green;");
@@ -369,6 +368,7 @@ public class AppController {
             //scriptOutput.setStyle("-fx-text-inner-color: red;");
             System.out.println(e.getMessage());
         }
+        simulation.updateField();
     }
 
     void updateInterpreter(){
