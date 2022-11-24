@@ -134,8 +134,8 @@ public class AppController {
         field = new Field2D(40, 40);
         simulation = new FieldSimulation(field, canvas);
 
-        field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.001,false));
-        field.getPlanes().add(new Plane(Vector2D.fromCoords(-40, -10),Vector2D.fromCoords(-20, 10),0.001,true));
+        //field.getPlanes().add(new Plane(Vector2D.fromCoords(-10, -10),Vector2D.fromCoords(10, 10),0.001,false));
+        //field.getPlanes().add(new Plane(Vector2D.fromCoords(-40, -10),Vector2D.fromCoords(-20, 10),0.001,true));
         //field.getParticles().add(new Particle(Vector2D.fromCoords(10.1, 10), 0.0001));
         simulation.updateField();
         AnimTask task = new AnimTask(()->{
@@ -264,8 +264,8 @@ public class AppController {
                             return;
                         }
                     //}
-                    Vector2D nearest = simulation.convertScreenCoordsToFieldAndFindNearestGridPoint(Vector2D.fromCoords(e.getX(), e.getY()));
-                    Particle particle = new Particle(nearest, Q);
+                    //Vector2D nearest = simulation.convertScreenCoordsToFieldAndFindNearestGridPoint(Vector2D.fromCoords(e.getX(), e.getY()));
+                    Particle particle = new Particle(coords, Q);
 
                     if(field.getParticles().stream().filter((p)->p.getPos().equals(particle.getPos())).count()==0) {
                         field.getParticles().add(particle);
@@ -310,6 +310,7 @@ public class AppController {
                 for(Particle p: field.getParticles()){
                     if(coords.sub(p.getPos()).len()<10){
                         simulation.selectParticle(p);
+                        inputText.setText(Double.toString(simulation.getSelectedParticle().getQ()));
                     }
                 }
             }

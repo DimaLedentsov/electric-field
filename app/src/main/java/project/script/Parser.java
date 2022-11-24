@@ -40,8 +40,6 @@ public class Parser {
                 throw new ParseException("неправильный формат числа");
             }
             
-
-
         }
 
     }
