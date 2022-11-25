@@ -134,6 +134,13 @@ public class FieldSimulation {
 
             addLine(Vector2D.fromCoords(x, y));
         });
+        types.put("очистить", (args)->{
+            field.getLines().clear();
+            field.getParticles().clear();
+            field.getPlanes().clear();
+            selectParticle(null);
+            updateField();
+        });
 
         parser = new Parser(types);
     }

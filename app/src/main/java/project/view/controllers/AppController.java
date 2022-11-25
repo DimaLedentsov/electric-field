@@ -188,11 +188,13 @@ public class AppController {
     @FXML
     void showField(ActionEvent event) {
         simulation.setShowField(showFieldCheckBox.isSelected());
+        simulation.render();
     }
 
     @FXML
     void showLines(ActionEvent event) {
         simulation.setShowLines(showLinesCheckBox.isSelected());
+        simulation.render();
     }
     @FXML
     void remove(ActionEvent event) {
@@ -301,6 +303,7 @@ public class AppController {
                         List<Vector2D> line = simulation.getPrunedLine(simulation.getPotentionalLine(coords));
                         field.getLines().add(new PotentialLine(colorPicker.getValue(), coords,simulation.potential(coords), line));
                         simulation.setPotentionalLineColor(colorPicker.getValue());
+                        simulation.updateField();
                     });
                     
                 } else if (choiceBox.getSelectionModel().getSelectedItem()==ItemType.PLANE){
