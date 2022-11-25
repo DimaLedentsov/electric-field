@@ -14,6 +14,7 @@ public class Parser {
     }
     public void execute(String code) throws ParseException{
         //List<Object<?>> objects = new LinkedList<>();
+        if(code==null || code.trim().equals("")|| code.trim().split("\n").length==0) throw new ParseException("пустой скрипт");
         for(String line: code.split("\n")){
             String pair[] = line.trim().split(" ",2);
             if (pair.length!=2) throw new ParseException("неправильно задан объект, формат тип пробел данные");

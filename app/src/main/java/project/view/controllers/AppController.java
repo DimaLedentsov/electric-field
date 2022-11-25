@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -148,15 +149,24 @@ public class AppController {
         //field.getPlanes().add(new Plane(Vector2D.fromCoords(-40, -10),Vector2D.fromCoords(-20, 10),0.001,true));
         //field.getParticles().add(new Particle(Vector2D.fromCoords(10.1, 10), 0.0001));
         simulation.updateField();
-        AnimTask task = new AnimTask(()->{
+        /*AnimTask task = new AnimTask(()->{
             simulation.update();
             simulation.render();
         });
-        task.start();
+        
+        task.start();*/
+   
 
         canvas.widthProperty().bind(canvasPane.widthProperty());
         canvas.heightProperty().bind(canvasPane.heightProperty());
 
+        ChangeListener update = (e,o1,o2)->{
+            simulation.updateField();
+          //  simulation.render();
+        };
+        
+        canvas.widthProperty().addListener(update);
+        canvas.heightProperty().addListener(update);
         choiceBox.getItems().addAll(ItemType.values());
         choiceBox.getSelectionModel().select(ItemType.PARTICLE);
         updateSettings();
@@ -281,8 +291,9 @@ public class AppController {
                         field.getParticles().add(particle);
                     }
                     //System.out.println(p);
-                    simulation.updateField();
                     field.getLines().clear();
+                    simulation.updateField();
+                    
                 }
                 else if(choiceBox.getSelectionModel().getSelectedItem()==ItemType.POTENTIONAL_LINE){
          
@@ -306,10 +317,10 @@ public class AppController {
                                 return;
                             }
                         //}
-                        
+                        field.getLines().clear();
                         field.getPlanes().add(new Plane(coords,lastClick,density,planeSign.isSelected()));
                         simulation.updateField();
-                        field.getLines().clear();
+                        
                         lastClick=null;
                     }
                 }

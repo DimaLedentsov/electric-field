@@ -79,7 +79,7 @@ public class FieldSimulation {
             if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
             String[] coords = args.get("координаты");
             double x = Double.parseDouble(coords[0]);
-            double y = Double.parseDouble(coords[1]);
+            double y = Double.parseDouble(coords[1])*(-1);
             double Q =1;
             if(args.containsKey("величина")&& args.get("величина").length>=1){
                 Q = Double.parseDouble(args.get("величина")[0]);
@@ -91,9 +91,9 @@ public class FieldSimulation {
             if(!args.containsKey("координаты") || args.get("координаты").length!=4) throw new ParseException("не заданы координаты");
             String[] coords = args.get("координаты");
             double x1 = Double.parseDouble(coords[0]);
-            double y1 = Double.parseDouble(coords[1]);
+            double y1 = Double.parseDouble(coords[1])*(-1);
             double x2 = Double.parseDouble(coords[2]);
-            double y2 = Double.parseDouble(coords[3]);
+            double y2 = Double.parseDouble(coords[3])*(-1);
             double density =0.001;
             boolean isNegative = false;
             if(args.containsKey("плотность")&& args.get("плотность").length>=1){
@@ -107,7 +107,30 @@ public class FieldSimulation {
             if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
             String[] coords = args.get("координаты");
             double x = Double.parseDouble(coords[0]);
-            double y = Double.parseDouble(coords[1]);
+            double y = Double.parseDouble(coords[1])*(-1);
+
+            addLine(Vector2D.fromCoords(x, y));
+        });
+        types.put("линии-с-шагом", (args)->{
+            if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
+            String[] coords = args.get("координаты");
+            double x = Double.parseDouble(coords[0]);
+            double y = Double.parseDouble(coords[1])*(-1);
+
+            if(!args.containsKey("шаг")||args.get("шаг").length!=2) throw new ParseException("не задан шаг");
+            String[] dCoords = args.get("шаг");
+            double dx = Double.parseDouble(dCoords[0]);
+            double dy = Double.parseDouble(dCoords[1]);
+            int N = 10;
+            if(args.containsKey("количество")&&args.get("количество").length==1) {
+                N = Integer.parseInt(args.get("количество")[0]);
+            };
+            for(int i=0;i<N;i++){
+                addLine(Vector2D.fromCoords(x, y));
+                x+=dx;
+                y+=dy;
+            }
+
 
             addLine(Vector2D.fromCoords(x, y));
         });
@@ -382,6 +405,7 @@ public class FieldSimulation {
     /*TODO: select point for line, show values */
 
     public void updateField(){
+        
         maxE=0;
         minE = 9999999;
         for(int y=0; y<field.getGridHeight(); y++){
@@ -395,15 +419,7 @@ public class FieldSimulation {
                 //System.out.println(vec.toString());
             }
         }
-        maxPotential=0;
-        for(int y=0;y<field.getHeight();y++){
-            for(int x=0;x<field.getWidth();x++){
-                double p = potential(Vector2D.fromCoords(x-field.getWidth()/2, y-field.getHeight()/2));
-                maxPotential=Math.max(p, maxPotential);
-                potential[y][x]=p;
-
-            }
-        }
+        render();
 
     }
     public void update(){
