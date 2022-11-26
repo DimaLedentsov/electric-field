@@ -453,7 +453,7 @@ public class AppController {
 
         WebView webView = new WebView();
 
-        webView.getEngine().load("https://docs.google.com/presentation/d/e/2PACX-1vQz1Kvk9mDpbjI4s4MXdzLOdrOYUmiu7iCkUTIScHEzMgypiKQJE75KLcvRy8HZ5vPh2berMMlCbFcB/pub?start=false&loop=false&delayms=3000");
+        webView.getEngine().load("https://docs.google.com/document/d/e/2PACX-1vS1rjliN81Hk9XvdOWkmBNN5EyovmYXVGsaieb3pA1BTXUKmUhif064Ym-v_uJ8wfk6gvZntVy-0d_3/pub");
 
         VBox vBox = new VBox(webView);
         Scene scene = new Scene(vBox, 960, 600);
