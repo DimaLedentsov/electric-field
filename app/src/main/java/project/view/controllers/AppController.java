@@ -452,11 +452,14 @@ public class AppController {
         stage.setTitle("справка");
 
         WebView webView = new WebView();
-
-        webView.getEngine().load("https://docs.google.com/document/d/e/2PACX-1vS1rjliN81Hk9XvdOWkmBNN5EyovmYXVGsaieb3pA1BTXUKmUhif064Ym-v_uJ8wfk6gvZntVy-0d_3/pub");
-
+        
+       // Platform.runLater(()->{
+       webView.getEngine().load(getClass().getResource("/about/index.html").toExternalForm());
+       //
+       // });
+ 
         VBox vBox = new VBox(webView);
-        Scene scene = new Scene(vBox, 960, 600);
+        Scene scene = new Scene(vBox, 500, 600);
 
         stage.setScene(scene);
         stage.show();
