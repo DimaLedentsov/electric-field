@@ -200,9 +200,10 @@ public class AppController {
     void remove(ActionEvent event) {
         if(simulation.getSelectedParticle()!=null){
             field.getParticles().remove(simulation.getSelectedParticle());
-            simulation.updateField();
+            
             field.getLines().clear();
             simulation.selectParticle(null);
+            simulation.updateField();
         }
 
     }
@@ -335,6 +336,8 @@ public class AppController {
                     if(coords.sub(p.getPos()).len()<10){
                         simulation.selectParticle(p);
                         inputText.setText(Double.toString(simulation.getSelectedParticle().getQ()));
+                        simulation.render();
+                        break;
                     }
                 }
             }

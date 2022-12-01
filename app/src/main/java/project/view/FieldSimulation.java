@@ -47,7 +47,7 @@ public class FieldSimulation {
     final double MAX_EPSILON_DISTANCE = 0.5; //0.5; макс расстояние на котором ищется точка, попробовать увеличить
     final double K_CONSTANT = 9;
     final double e0 = 8.854187*Math.pow(10, -12);//8.854187e-12;
-
+    final double PARTICLE_R=10;
     private boolean showField;
     private boolean showLines;
     
@@ -700,7 +700,10 @@ public class FieldSimulation {
         for(int y=0; y<field.getGridHeight(); y++){
             for(int x=0; x<field.getGridWidth(); x++){
                 Vector2D vec = field.get(x, y);
-                Vector2D renderCoords = convertFieldCoordsToScreen(convertGridCoordsToField(x, y));
+                Vector2D fieldCoords = convertGridCoordsToField(x, y);
+                Vector2D renderCoords = convertFieldCoordsToScreen(fieldCoords);
+                
+                //if(!field.getParticles().stream().anyMatch((p)-> p.getPos().distance(fieldCoords)<5))
                 drawArrow(renderCoords, 10, vec.getAngle(), norm(vec.len())); //TODO: цвет блять
                 //ctx.setFill(Color.RED);
                 //ctx.fillOval(renderCoords.getX()-1.5, renderCoords.getY()-1.5, 3, 3);
@@ -710,7 +713,7 @@ public class FieldSimulation {
 
     void renderPlanes(){
         for (Plane p: field.getPlanes()){
-            double r=10;
+            double r=PARTICLE_R;
             if(!p.isNegative()) ctx.setStroke(Color.RED);
             else ctx.setStroke(Color.BLUE);
             ctx.setLineWidth(5*k);
