@@ -27,8 +27,6 @@ import project.utils.AnimTask;
 import project.utils.ResizableCanvas;
 import project.view.FieldSimulation;
 import project.view.controllers.AppController;
-import project.view.controllers.ControllerType;
-import project.view.controllers.management.ControllerManager;
 
 public class App extends Application
 {
