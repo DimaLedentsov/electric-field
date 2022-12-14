@@ -1,3 +1,4 @@
+
 package project.view.controllers;
 
 import java.io.File;
@@ -462,7 +463,7 @@ public class AppController {
        // });
  
         VBox vBox = new VBox(webView);
-        Scene scene = new Scene(vBox, 500, 600);
+        Scene scene = new Scene(vBox, 850, 600);
 
         stage.setScene(scene);
         stage.show();

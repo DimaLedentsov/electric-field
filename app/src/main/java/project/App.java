@@ -27,6 +27,8 @@ import project.utils.AnimTask;
 import project.utils.ResizableCanvas;
 import project.view.FieldSimulation;
 import project.view.controllers.AppController;
+import project.view.controllers.ControllerType;
+import project.view.controllers.management.ControllerManager;
 
 public class App extends Application
 {
@@ -35,6 +37,7 @@ public class App extends Application
         Application.launch(args);
     }
      
+
     @Override
     public void start(Stage stage) throws IOException
     { 
@@ -42,44 +45,19 @@ public class App extends Application
         FXMLLoader appLoader = new FXMLLoader();
         appLoader.setLocation(getClass().getResource("/app.fxml"));
         
-        Pane root = (Pane)appLoader.load();
+        Parent root = appLoader.load();
         AppController appController = appLoader.getController();
         
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         
-        // Create the Canvas
-
-         // Get the graphics context of the canvas
-        
-
-        // Create the Pane
-  
-        // Set the Style-properties of the Pane
-        
-        // Add the Canvas to the Pane
-    
-        
-       // Jfoeni
-        // Create the Scene
-        //root.getStyleClass().add(JMetroStyleClass.BACKGROUND);
+     
         Scene scene = new Scene(root,650,400);
-        //JMetro jMetro = new JMetro(Style.LIGHT);
-        //jMetro.setScene(scene); 
-        /*final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
-                           JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
-                           MainDemo.class.getResource("/css/jfoenix-main-demo.css").toExternalForm());
-        // Add the Scene to the Stage*/
-        //scene.getStylesheets().add(JMetroStyleClass.BACKGROUND);
-        //scene.getStylesheets().add(getClass().getResource("app.css").toExternalForm());
-        stage.setScene(scene);
+             stage.setScene(scene);
         // Set the Title of the Stage
         stage.setTitle("симуляция электрического поля");
         // Display the Stage
         stage.show();    
-        
-
-
-        
+        /*ControllerManager controllerManager = new ControllerManager(this);
+        controllerManager.switchOn(ControllerType.APP).show();      */
     }
 }
