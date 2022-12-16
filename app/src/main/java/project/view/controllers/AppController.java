@@ -163,7 +163,7 @@ public class AppController {
 
         ChangeListener update = (e,o1,o2)->{
             simulation.updateField();
-          //  simulation.render();
+          //  simulation.render();//TOFO: remove
         };
         
         canvas.widthProperty().addListener(update);
@@ -218,13 +218,13 @@ public class AppController {
             else{
                 try{
                     Q = Double.parseDouble(inputText.getText());
+                    simulation.getSelectedParticle().setQ(Q);
+                    field.getLines().clear();
+                    simulation.updateField();
                 } catch(NumberFormatException ex){
                     error("неправильно введен заряд");
                 }
             }
-            simulation.getSelectedParticle().setQ(Q);
-            simulation.updateField();
-            field.getLines().clear();
         }
     }
 
@@ -241,8 +241,9 @@ public class AppController {
     void removePlane(ActionEvent event) {
         lastClick=null;
         field.getPlanes().clear();
-        simulation.updateField();
         field.getLines().clear();
+        simulation.updateField();
+        
     }
     @FXML
     void changeSign(ActionEvent event) {
@@ -439,7 +440,7 @@ public class AppController {
         fileChooser.setInitialDirectory(new File(currentPath)); 
         
         File file = fileChooser.showOpenDialog(null);
-
+        script.setText("");
         try (Scanner scanner = new Scanner(file)) {
 
             while (scanner.hasNext()) script.setText(script.getText() + scanner.nextLine()+"\n");
