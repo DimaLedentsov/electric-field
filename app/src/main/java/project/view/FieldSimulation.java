@@ -68,7 +68,7 @@ public class FieldSimulation {
         firstWidth=c.getWidth();
         firstHeight=c.getHeight();
         potential = new double[(int)f.getHeight()][(int)f.getWidth()];
-        lineColor = Color.PURPLE;
+        lineColor = Color.rgb(255, 0, 239);
 
         configureParser();
     }
