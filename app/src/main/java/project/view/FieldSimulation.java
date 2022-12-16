@@ -120,7 +120,7 @@ public class FieldSimulation {
             if(!args.containsKey("шаг")||args.get("шаг").length!=2) throw new ParseException("не задан шаг");
             String[] dCoords = args.get("шаг");
             double dx = Double.parseDouble(dCoords[0]);
-            double dy = Double.parseDouble(dCoords[1]);
+            double dy = Double.parseDouble(dCoords[1])*(-1);
             int N = 10;
             if(args.containsKey("количество")&&args.get("количество").length==1) {
                 N = Integer.parseInt(args.get("количество")[0]);
