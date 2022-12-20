@@ -111,7 +111,7 @@ public class FieldSimulation {
 
             addLine(Vector2D.fromCoords(x, y));
         });
-        types.put("линии-с-шагом", (args)->{
+        /*types.put("линии-с-шагом", (args)->{
             if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
             String[] coords = args.get("координаты");
             double x = Double.parseDouble(coords[0]);
@@ -133,6 +133,55 @@ public class FieldSimulation {
 
 
             addLine(Vector2D.fromCoords(x, y));
+        });*/
+        types.put("линии-с-шагом", (args)->{
+            if(!args.containsKey("координаты") || args.get("координаты").length!=2) throw new ParseException("не заданы координаты");
+            String[] coords = args.get("координаты");
+            double x = Double.parseDouble(coords[0]);
+            double y = Double.parseDouble(coords[1])*(-1);
+            Vector2D pos = Vector2D.fromCoords(x, y);
+            double q = potential(pos);
+
+            double dx=pos.getX();
+            double dy=pos.getY();
+            if(args.containsKey("направление")&&args.get("направление").length!=2) throw new ParseException("неправильно задано направление");
+            else if(args.containsKey("направление")){
+                String[] dCoords = args.get("направление");
+                dx = Double.parseDouble(dCoords[0]);
+                dy = Double.parseDouble(dCoords[1])*(-1);
+            }
+            Vector2D dir = Vector2D.fromCoords(dx, dy);
+            dir = dir.normalize().div(100);
+
+            if(!args.containsKey("шаг")||args.get("шаг").length!=1) throw new ParseException("не задан шаг");
+            String[] d = args.get("шаг");
+            double dq = Double.parseDouble(d[0]);
+            int N = 10;
+            double distance = 4;
+            if(args.containsKey("количество")&&args.get("количество").length==1) {
+                N = Integer.parseInt(args.get("количество")[0]);
+            };
+            dq = q/dq;
+            addLine(pos);
+            for(int i=0;i<N-1;i++){
+                for(int j=0;j<100;j++){
+                    pos = pos.add(dir);
+                    double q1 = potential(pos);
+                    //System.out.println(q1-q);
+                    if(Math.abs(q1-q)>=dq){
+                        addLine(pos);
+                        q=q1;
+                        break;
+                    }
+                }
+                /*pos.add(dir);
+                q+=dq;
+                pos = getNextPositionAlongEquipotentialWithElectricPotential(pos, q, distance);
+                addLine(pos);*/
+            }
+
+
+            //addLine(Vector2D.fromCoords(x, y));
         });
         types.put("очистить", (args)->{
             field.getLines().clear();
@@ -566,7 +615,7 @@ public class FieldSimulation {
     
           //TODO: bounds!
           // is at least one current head inside the bounds?
-          isEquipotentialLineTerminatingInsideBounds = field.containsPoint(currentClockwisePosition) || field.containsPoint(currentCounterClockwisePosition);
+          isEquipotentialLineTerminatingInsideBounds = true; //field.containsPoint(currentClockwisePosition) || field.containsPoint(currentCounterClockwisePosition); //TODO: aaaa!
             //( this.model.enlargedBounds.containsPoint( currentClockwisePosition ) || this.model.enlargedBounds.containsPoint( currentCounterClockwisePosition ) );
     
         } // end of while()
@@ -719,9 +768,9 @@ public class FieldSimulation {
             ctx.setLineWidth(5*k);
 
             Vector2D start = p.getStartPoint()
-            .sub(p.getDirection().mul(p.getStartPoint().distance(Vector2D.fromCoords(-field.getWidth()/2, -field.getHeight()/2))));
+            .sub(p.getDirection().mul(p.getStartPoint().distance(Vector2D.fromCoords(field.getWidth()/2, field.getHeight()/2))));
             Vector2D end = p.getEndPoint()
-            .add(p.getDirection().mul(p.getEndPoint().distance(Vector2D.fromCoords(-field.getWidth()/2, -field.getHeight()/2))));
+            .add(p.getDirection().mul(p.getEndPoint().distance(Vector2D.fromCoords(field.getWidth()/2, field.getHeight()/2))));
             Vector2D lineStartCoords = convertFieldCoordsToScreen(start);
             Vector2D lineEndCoords = convertFieldCoordsToScreen(end);
             ctx.strokeLine(lineStartCoords.getX(), lineStartCoords.getY(), lineEndCoords.getX(), lineEndCoords.getY());
