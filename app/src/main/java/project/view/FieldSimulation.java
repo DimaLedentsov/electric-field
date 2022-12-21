@@ -156,13 +156,15 @@ public class FieldSimulation {
 
             if(!args.containsKey("шаг")||args.get("шаг").length!=1) throw new ParseException("не задан шаг");
             String[] d = args.get("шаг");
+            if(!d[0].endsWith("%")) throw new ParseException("шаг должен быть задан в процентах");
+            d[0] = d[0].substring(0, d[0].length()-1);
             double dq = Double.parseDouble(d[0]);
             int N = 10;
             double distance = 4;
             if(args.containsKey("количество")&&args.get("количество").length==1) {
                 N = Integer.parseInt(args.get("количество")[0]);
             };
-            dq = q/dq;
+            dq = q/100*dq;
             addLine(pos);
             for(int i=0;i<N-1;i++){
                 for(int j=0;j<100;j++){
