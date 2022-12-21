@@ -47,6 +47,11 @@
                               <CheckBox fx:id="showFieldCheckBox" mnemonicParsing="false" onAction="#showField" selected="true" text="показывать поле" wrapText="true" />
                            </content>
                         </CustomMenuItem>
+                        <CustomMenuItem hideOnClick="false" mnemonicParsing="false" text="Unspecified Action">
+                          <content>
+                            <CheckBox fx:id="showAxesCheckBox" onAction="#showAxes" selected="true" text="показывать оси" />
+                          </content>
+                        </CustomMenuItem>
                     </items>
                   </Menu>
                 <MenuItem fx:id="clearButton" mnemonicParsing="false" onAction="#clearAll" text="очистить все" />

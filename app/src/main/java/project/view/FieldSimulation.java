@@ -51,6 +51,7 @@ public class FieldSimulation {
     final double PARTICLE_R=10;
     private boolean showField;
     private boolean showLines;
+    private boolean showAxes;
     
     private Particle selectedParticle;
     private Color lineColor;
@@ -63,6 +64,7 @@ public class FieldSimulation {
     public FieldSimulation(Field2D f, Canvas c){
         showField = true;
         showLines = true;
+        showAxes = true;
         field = f;
         canvas = c;
         ctx = c.getGraphicsContext2D();
@@ -853,7 +855,7 @@ public class FieldSimulation {
         clearScreen();
         //renderPotential();
         
-        renderAxis();
+        if(showAxes) renderAxis();
         if(showField) renderField();
         if(showLines) renderLines();
         renderPlanes();
@@ -873,6 +875,9 @@ public class FieldSimulation {
     }
     public void setShowLines(boolean f){
         showLines = f;
+    }
+    public void setShowAxes(boolean f){
+        showAxes = f;
     }
 
     public Parser getParser(){

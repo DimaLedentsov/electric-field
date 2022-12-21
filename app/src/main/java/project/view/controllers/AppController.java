@@ -91,6 +91,8 @@ public class AppController {
     @FXML
     private CheckBox showLinesCheckBox;
 
+    @FXML
+    private CheckBox showAxesCheckBox;
     
     @FXML
     private TextField chargeDensity;
@@ -207,6 +209,11 @@ public class AppController {
     @FXML
     void showLines(ActionEvent event) {
         simulation.setShowLines(showLinesCheckBox.isSelected());
+        simulation.render();
+    }
+    @FXML
+    void showAxes(ActionEvent event) {
+        simulation.setShowAxes(showAxesCheckBox.isSelected());
         simulation.render();
     }
     @FXML
