@@ -28,6 +28,7 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -39,6 +40,8 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import project.logic.Field2D;
 import project.logic.Particle;
 import project.logic.Plane;
@@ -109,6 +112,12 @@ public class AppController {
     
     @FXML
     private CheckMenuItem showInterpreter;
+
+    @FXML
+    private Tooltip densityTooltip;
+
+    @FXML
+    private Tooltip chargeTooltip;
 
     Field2D field;
     FieldSimulation simulation;
@@ -183,6 +192,9 @@ public class AppController {
 
             }
         });
+
+        chargeTooltip.setShowDelay(Duration.millis(10));
+        densityTooltip.setShowDelay(Duration.millis(10));
     
        
     }

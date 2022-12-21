@@ -446,7 +446,7 @@ public class FieldSimulation {
         //assert && assert( midwayElectricField.magnitude !== 0, 'the magnitude of the electric field is zero: midway Electric Field ' );
         double midwayElectricPotential = potential( midwayPosition ); //  {number}
         double deltaElectricPotential = midwayElectricPotential - electricPotential; // {number}
-        Vector2D deltaPosition = midwayElectricField.mul( deltaElectricPotential / (midwayElectricField.len()* midwayElectricField.len())); // {Vector2}
+        Vector2D deltaPosition = midwayElectricField.normalize().mul( deltaElectricPotential / midwayElectricField.len()); // {Vector2}
     
         // if the second order correction is larger than the first, use a more computationally expensive but accurate method.
         if ( deltaPosition.len() > Math.abs( deltaDistance ) ) {
