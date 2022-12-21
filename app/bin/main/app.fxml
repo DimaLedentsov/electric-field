@@ -177,6 +177,11 @@
                   </AnchorPane>
               </content>
             </TitledPane>
+            <Label layoutX="14.0" layoutY="339.0" text="*1 у. е. на экране = 1 см" AnchorPane.bottomAnchor="5.000000000000021" AnchorPane.leftAnchor="14.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

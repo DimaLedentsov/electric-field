@@ -306,6 +306,7 @@ public class AppController {
 
                     if(field.getParticles().stream().filter((p)->p.getPos().equals(particle.getPos())).count()==0) {
                         field.getParticles().add(particle);
+                        simulation.selectParticle(particle);
                     }
                     //System.out.println(p);
                     field.getLines().clear();
@@ -318,6 +319,7 @@ public class AppController {
                         List<Vector2D> line = simulation.getPrunedLine(simulation.getPotentionalLine(coords));
                         field.getLines().add(new PotentialLine(colorPicker.getValue(), coords,simulation.potential(coords), line));
                         simulation.setPotentionalLineColor(colorPicker.getValue());
+                        simulation.selectParticle(null);
                         simulation.updateField();
                     });
                     
@@ -337,6 +339,7 @@ public class AppController {
                         //}
                         field.getLines().clear();
                         field.getPlanes().add(new Plane(coords,lastClick,density,planeSign.isSelected()));
+                        simulation.selectParticle(null);
                         simulation.updateField();
                         
                         lastClick=null;

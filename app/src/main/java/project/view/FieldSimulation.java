@@ -25,6 +25,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import project.logic.Field2D;
@@ -701,6 +702,33 @@ public class FieldSimulation {
         ctx.setStroke(Color.BLACK);
         ctx.strokeLine(canvas.getWidth()/2, 0, canvas.getWidth()/2, canvas.getHeight());
         ctx.strokeLine(0, canvas.getHeight()/2, canvas.getWidth(), canvas.getHeight()/2);
+        double labelWidth = 2;
+        double labelHeight = 8;
+        for(int i=- (int) field.getWidth()/2; i<=field.getWidth()/2; i+=10){
+            Vector2D textCoords = convertFieldCoordsToScreen(Vector2D.fromCoords(i, 0));
+            ctx.setFont(Font.font("Consolas", 8*k));
+            
+            ctx.setStroke(Color.BLACK);
+            ctx.strokeText(Integer.toString(i), textCoords.getX() - (i==(int)field.getWidth()/2? 12*k:0), textCoords.getY()-5*k);
+
+            ctx.fillRect(textCoords.getX()-labelWidth/2*k, textCoords.getY()-labelHeight/2*k, labelWidth*k, labelHeight*k);
+        
+        }
+        for(int i=- (int) field.getHeight()/2; i<=field.getHeight()/2; i+=10){
+            Vector2D textCoords = convertFieldCoordsToScreen(Vector2D.fromCoords(0, i));
+            if(i!=0){
+                
+                ctx.setFont(Font.font("Consolas", 8*k));
+                ctx.setStroke(Color.BLACK);
+                ctx.strokeText(Integer.toString(i*(-1)), textCoords.getX()+5*k, textCoords.getY() + (i== field.getHeight()/2? -12*k: i>0 ? -7*k: +7*k));
+            }
+            ctx.fillRect(textCoords.getX()-labelHeight/2*k, textCoords.getY()-labelWidth/2*k, labelHeight*k, labelWidth*k);
+
+        }
+
+        //ctx.setStroke(Color.BLACK);
+        //ctx.strokeText(Double.toString(Math.round(l.getPotential()*1000.0)/1000.0), textCoords.getX(), textCoords.getY());
+            
         //double n = 50;
         //double x = field.getWidth()/2;
         //for(int i=0; i<n; i++){
